@@ -62,8 +62,8 @@ async def get_obj_list_controller(
     # 使用数据库分页而不是应用层分页
     result_dict = await DemoService.page_service(
         auth=auth, 
-        page_no=page.page_no if page.page_no is not None else 1, 
-        page_size=page.page_size if page.page_size is not None else 10, 
+        page_no=page.page_no, 
+        page_size=page.page_size, 
         search=search, 
         order_by=page.order_by
     )

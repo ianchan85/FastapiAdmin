@@ -7,6 +7,8 @@ from sqlalchemy.orm import selectinload
 from sqlalchemy.engine import Result
 from sqlalchemy import asc, func, select, delete, Select, desc, update, or_, and_
 from sqlalchemy import inspect as sa_inspect
+from fastapi_pagination import Page, add_pagination, Params
+from fastapi_pagination.ext.sqlalchemy import paginate as pagination_paginate
 
 from app.core.base_model import MappedBase
 from app.core.exceptions import CustomException
@@ -175,15 +177,13 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
             result: Result = await self.db.execute(sql.offset(offset).limit(limit))
             objs = result.scalars().all()
 
-            data = PageResultSchema(
-                items=[out_schema.model_validate(obj).model_dump() for obj in objs],
-                total=total,
-                page_no=offset // limit + 1 if limit else 1,
-                page_size=limit,
-                has_next=offset + limit < total,
-            ).model_dump()
-
-            return data
+            return {
+                "page_no": offset // limit + 1 if limit else 1,
+                "page_size": limit if limit else 10,
+                "total": total,
+                "has_next": offset + limit < total,
+                "items": [out_schema.model_validate(obj).model_dump() for obj in objs]
+            }
         except Exception as e:
             raise CustomException(msg=f"分页查询失败: {str(e)}")
     
