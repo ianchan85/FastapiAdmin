@@ -17,7 +17,7 @@ class DeptCreateSchema(BaseModel):
     phone: Optional[str] = Field(default=None, max_length=11, description="手机")
     email: Optional[str] = Field(default=None, max_length=64, description="邮箱")
     parent_id: Optional[int] = Field(default=None, ge=0, description="父部门ID")
-    status: str = Field(default="0", description="是否启用(True:启用 False:禁用)")
+    status: str = Field(default="0", description="是否启用(0:启用 1:禁用)")
     description: Optional[str] = Field(default=None, max_length=255, description="备注说明")
 
     @field_validator('name')

@@ -150,7 +150,7 @@ class PositionService:
         # 复制数据并转换状态
         data = position_list.copy()
         for item in data:
-            item['status'] = '正常' if item.get('status') else '停用'
+            item['status'] = '启用' if item.get('status') == '0' else '停用'
             item['creator'] = item.get('creator', {}).get('name', '未知') if isinstance(item.get('creator'), dict) else '未知'
 
         return ExcelUtil.export_list2excel(list_data=data, mapping_dict=mapping_dict)

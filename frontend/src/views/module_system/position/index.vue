@@ -30,7 +30,7 @@
         </el-form-item>
         <el-form-item v-if="isExpand" prop="creator" label="创建人">
           <UserTableSelect
-            v-model="queryFormData.creator"
+            v-model="queryFormData.created_id"
             @confirm-click="handleConfirm"
             @clear-click="handleQuery"
           />
@@ -115,10 +115,10 @@
                 </el-button>
                 <template #dropdown>
                   <el-dropdown-menu v-hasPerm="['module_system:position:filter']">
-                    <el-dropdown-item icon="Check" @click="handleMoreClick(true)">
+                    <el-dropdown-item icon="Check" @click="handleMoreClick('0')">
                       批量启用
                     </el-dropdown-item>
-                    <el-dropdown-item icon="CircleClose" @click="handleMoreClick(false)">
+                    <el-dropdown-item icon="CircleClose" @click="handleMoreClick('1')">
                       批量停用
                     </el-dropdown-item>
                   </el-dropdown-menu>
@@ -214,8 +214,8 @@
           min-width="80"
         >
           <template #default="scope">
-            <el-tag :type="scope.row.status === true ? 'success' : 'danger'">
-              {{ scope.row.status === true ? "启用" : "停用" }}
+            <el-tag :type="scope.row.status === '0' ? 'success' : 'danger'">
+              {{ scope.row.status === '0' ? "启用" : "停用" }}
             </el-tag>
           </template>
         </el-table-column>
@@ -365,8 +365,8 @@
           </el-form-item>
           <el-form-item label="状态" prop="status">
             <el-radio-group v-model="formData.status">
-              <el-radio :value="true">启用</el-radio>
-              <el-radio :value="false">停用</el-radio>
+              <el-radio :value="0">启用</el-radio>
+              <el-radio :value="1">停用</el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item label="描述" prop="description">
@@ -458,10 +458,8 @@ const queryFormData = reactive<PositionPageQuery>({
   page_size: 10,
   name: "",
   status: undefined,
-  start_time: undefined,
-  end_time: undefined,
-  // 创建人
-  creator: undefined,
+  created_time: undefined,
+  created_id: undefined,
 });
 
 // 编辑表单
@@ -469,7 +467,7 @@ const formData = reactive<PositionForm>({
   id: undefined,
   name: undefined,
   order: 1,
-  status: true,
+  status: '0',
   description: undefined,
 });
 
@@ -494,11 +492,9 @@ const dateRange = ref<[Date, Date] | []>([]);
 function handleDateRangeChange(range: [Date, Date]) {
   dateRange.value = range;
   if (range && range.length === 2) {
-    queryFormData.start_time = formatToDateTime(range[0]);
-    queryFormData.end_time = formatToDateTime(range[1]);
+    queryFormData.created_time = [formatToDateTime(range[0]), formatToDateTime(range[1])];
   } else {
-    queryFormData.start_time = undefined;
-    queryFormData.end_time = undefined;
+    queryFormData.created_time = undefined;
   }
 }
 
@@ -538,8 +534,7 @@ async function handleResetQuery() {
   queryFormData.page_no = 1;
   // 额外清空日期范围与时间查询参数
   dateRange.value = [];
-  queryFormData.start_time = undefined;
-  queryFormData.end_time = undefined;
+  queryFormData.created_time = undefined;
   loadingData();
 }
 
@@ -548,7 +543,7 @@ const initialFormData: PositionForm = {
   id: undefined,
   name: undefined,
   order: 1,
-  status: true,
+  status: '0',
   description: undefined,
 };
 
@@ -650,9 +645,9 @@ async function handleOpenExportsModal() {
   exportsDialogVisible.value = true;
 }
 // 批量启用/停用
-async function handleMoreClick(status: boolean) {
+async function handleMoreClick(status: string) {
   if (selectIds.value.length) {
-    ElMessageBox.confirm(`确认${status ? "启用" : "停用"}该项数据?`, "警告", {
+    ElMessageBox.confirm(`确认${status === "0" ? "启用" : "停用"}该项数据?`, "警告", {
       confirmButtonText: "确定",
       cancelButtonText: "取消",
       type: "warning",

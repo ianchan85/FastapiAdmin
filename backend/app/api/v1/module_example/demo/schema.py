@@ -11,7 +11,7 @@ from app.core.base_schema import BaseSchema, UserBySchema, TenantSchema, Custome
 class DemoCreateSchema(BaseModel):
     """新增模型"""
     name: str = Field(..., min_length=2, max_length=50, description='名称')
-    status: str = Field(default="0", description="是否启用(True:启用 False:禁用)")
+    status: str = Field(default="0", description="是否启用(0:启用 1:禁用)")
     description: Optional[str] = Field(default=None, max_length=255, description="描述")
 
     @field_validator('name')

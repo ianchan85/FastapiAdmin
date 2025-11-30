@@ -140,7 +140,7 @@
         <el-table-column label="任务组名" prop="job_group" min-width="120" show-overflow-tooltip />
         <el-table-column label="执行状态" prop="status" min-width="100" show-overflow-tooltip>
           <template #default="scope">
-            <el-tag :type="scope.row.status === true ? 'success' : 'danger'">
+            <el-tag :type="scope.row.status === '0' ? 'success' : 'danger'">
               {{ scope.row.status ? "成功" : "失败" }}
             </el-tag>
           </template>
@@ -320,8 +320,7 @@ const queryFormData = reactive<JobLogPageQuery>({
   page_no: 1,
   page_size: 10,
   status: undefined,
-  start_time: undefined,
-  end_time: undefined,
+  created_time: undefined,
   job_id: props.jobId,
 });
 
@@ -339,11 +338,9 @@ const dateRange = ref<[Date, Date] | []>([]);
 function handleDateRangeChange(range: [Date, Date]) {
   dateRange.value = range;
   if (range && range.length === 2) {
-    queryFormData.start_time = formatToDateTime(range[0]);
-    queryFormData.end_time = formatToDateTime(range[1]);
+    queryFormData.created_time = [formatToDateTime(range[0]), formatToDateTime(range[1])];
   } else {
-    queryFormData.start_time = undefined;
-    queryFormData.end_time = undefined;
+    queryFormData.created_time = undefined;
   }
 }
 
@@ -378,8 +375,7 @@ async function handleResetQuery() {
   queryFormRef.value.resetFields();
   queryFormData.page_no = 1;
   queryFormData.status = undefined;
-  queryFormData.start_time = undefined;
-  queryFormData.end_time = undefined;
+  queryFormData.created_time = undefined;
   dateRange.value = [];
   loadingData();
 }

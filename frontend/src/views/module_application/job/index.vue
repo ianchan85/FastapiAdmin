@@ -30,7 +30,7 @@
         </el-form-item>
         <el-form-item v-if="isExpand" prop="creator" label="创建人">
           <UserTableSelect
-            v-model="queryFormData.creator"
+            v-model="queryFormData.created_id"
             @confirm-click="handleConfirm"
             @clear-click="handleQuery"
           />
@@ -199,7 +199,7 @@
         </el-table-column>
         <el-table-column label="状态" prop="status" min-width="100">
           <template #default="scope">
-            <el-tag :type="scope.row.status === true ? 'success' : 'danger'">
+            <el-tag :type="scope.row.status === '0' ? 'success' : 'danger'">
               {{ scope.row.status === true ? "运行中" : "暂停" }}
             </el-tag>
           </template>
@@ -657,10 +657,8 @@ const queryFormData = reactive<JobPageQuery>({
   page_size: 10,
   name: undefined,
   status: undefined,
-  start_time: undefined,
-  end_time: undefined,
-  // 创建人
-  creator: undefined,
+  created_time: undefined,
+  created_id: undefined,
 });
 
 // 编辑表单
@@ -709,11 +707,9 @@ const dateRange = ref<[Date, Date] | []>([]);
 function handleDateRangeChange(range: [Date, Date]) {
   dateRange.value = range;
   if (range && range.length === 2) {
-    queryFormData.start_time = formatToDateTime(range[0]);
-    queryFormData.end_time = formatToDateTime(range[1]);
+    queryFormData.created_time = [formatToDateTime(range[0]), formatToDateTime(range[1])];
   } else {
-    queryFormData.start_time = undefined;
-    queryFormData.end_time = undefined;
+    queryFormData.created_time = undefined;
   }
 }
 
@@ -753,8 +749,7 @@ async function handleResetQuery() {
   queryFormData.page_no = 1;
   // 额外清空日期范围与时间查询参数
   dateRange.value = [];
-  queryFormData.start_time = undefined;
-  queryFormData.end_time = undefined;
+  queryFormData.created_time = undefined;
   loadingData();
 }
 

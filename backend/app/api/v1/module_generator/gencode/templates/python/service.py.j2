@@ -113,7 +113,7 @@ class {{ class_name }}Service:
         for item in data:
             # 状态转换
             if 'status' in item:
-                item['status'] = '正常' if item.get('status') else '停用'
+                item['status'] = '启用' if item.get('status') == '0' else '停用'
             # 创建者转换
             creator_info = item.get('creator')
             if isinstance(creator_info, dict):

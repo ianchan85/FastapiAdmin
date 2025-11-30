@@ -26,7 +26,7 @@
         </el-form-item>
         <el-form-item v-if="isExpand" prop="creator" label="创建人">
           <UserTableSelect
-            v-model="queryFormData.creator"
+            v-model="queryFormData.created_id"
             @confirm-click="handleConfirm"
             @clear-click="handleQuery"
           />
@@ -209,8 +209,8 @@
 
         <el-form-item label="应用状态" prop="status">
           <el-radio-group v-model="formData.status">
-            <el-radio :value="true">启用</el-radio>
-            <el-radio :value="false">停用</el-radio>
+            <el-radio :value="0">启用</el-radio>
+            <el-radio :value="1">停用</el-radio>
           </el-radio-group>
         </el-form-item>
 
@@ -275,8 +275,7 @@ const queryFormData = reactive<ApplicationPageQuery>({
   page_no: 1,
   page_size: 12,
   name: undefined,
-  status: undefined,
-  creator: undefined,
+  status: undefined,  created_id: undefined,
 });
 
 // 应用列表数据
@@ -287,7 +286,7 @@ const formData = reactive<ApplicationForm>({
   name: "",
   access_url: "",
   icon_url: "",
-  status: true,
+  status: '0',
   description: "",
 });
 
@@ -460,7 +459,7 @@ function resetForm() {
     name: "",
     access_url: "",
     icon_url: "",
-    status: true,
+    status: '0',
     description: "",
   });
   formRef.value?.resetFields();

@@ -27,7 +27,7 @@ class MenuCreateSchema(BaseModel):
     params: Optional[list[dict[str, str]]] = Field(default=None, description="路由参数，格式为[{key: string, value: string}]")
     affix: bool = Field(default=False, description="是否固定标签页(True:是 False:否)")
     parent_id: Optional[int] = Field(default=None, ge=1, description="父菜单ID")
-    status: str = Field(default="0", description="是否启用(True:启用 False:禁用)")
+    status: str = Field(default="0", description="是否启用(0:启用 1:禁用)")
     description: Optional[str] = Field(default=None, max_length=255, description="描述")
 
     @model_validator(mode='before')

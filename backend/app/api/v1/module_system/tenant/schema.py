@@ -13,7 +13,7 @@ class TenantCreateSchema(BaseModel):
     """新增模型"""
     name: str = Field(..., max_length=64, description='租户名称')
     code: Optional[str] = Field(default=None, max_length=20, description='租户编码')
-    status: str = Field(default="0", description="是否启用(True:启用 False:禁用)")
+    status: str = Field(default="0", description="是否启用(0:启用 1:禁用)")
     description: Optional[str] = Field(default=None, max_length=255, description="描述")
     start_time: Optional[DateTimeStr] = Field(default=None, description="开始时间")
     end_time: Optional[DateTimeStr] = Field(default=None, description="结束时间")

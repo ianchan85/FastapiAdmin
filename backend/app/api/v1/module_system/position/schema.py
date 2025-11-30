@@ -12,7 +12,7 @@ class PositionCreateSchema(BaseModel):
     """岗位创建模型"""
     name: str = Field(..., max_length=40, description="岗位名称")
     order: Optional[int] = Field(default=1, ge=1, description='显示排序')
-    status: str = Field(default="0", description="是否启用(True:启用 False:禁用)")
+    status: str = Field(default="0", description="是否启用(0:启用 1:禁用)")
     description: Optional[str] = Field(default=None, max_length=255, description="描述")
 
     @field_validator('name')

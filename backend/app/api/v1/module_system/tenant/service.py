@@ -270,7 +270,7 @@ class TenantService:
                 item['name'] = f"{item.get('name')} [系统租户]"
             
             # 处理状态
-            item['status'] = '正常' if item.get('status') else '停用'
+            item['status'] = '启用' if item.get('status') == '0' else '停用'
             
             # 处理创建者
             creator_info = item.get('created_id')

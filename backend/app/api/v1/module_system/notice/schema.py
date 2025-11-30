@@ -14,7 +14,7 @@ class NoticeCreateSchema(BaseModel):
     notice_title: str = Field(..., max_length=50, description='公告标题')
     notice_type: str = Field(..., description='公告类型（1通知 2公告）')
     notice_content: str = Field(..., description='公告内容')
-    status: str = Field(default="0", description="是否启用(True:启用 False:禁用)")
+    status: str = Field(default="0", description="是否启用(0:启用 1:禁用)")
     description: Optional[str] = Field(default=None, max_length=255, description="描述")
 
     @field_validator("notice_type")

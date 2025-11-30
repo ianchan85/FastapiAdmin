@@ -175,7 +175,7 @@ class NoticeService:
         data = notice_list.copy()
         for item in data:
             # 处理状态
-            item['status'] = '正常' if item.get('status') else '停用'
+            item['status'] = '启用' if item.get('status') == '0' else '停用'
             # 处理公告类型
             item['notice_type'] = '通知' if item.get('notice_type') == '1' else '公告'
             item['creator'] = item.get('creator', {}).get('name', '未知') if isinstance(item.get('creator'), dict) else '未知'

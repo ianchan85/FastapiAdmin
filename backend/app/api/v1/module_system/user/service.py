@@ -283,15 +283,14 @@ class UserService:
             raise CustomException(msg="用户不存在")
         user = await UserCRUD(auth).get_by_id_crud(id=auth.user.id)
         # 获取部门名称
-        if user and user.dept_id:
-            dept = await DeptCRUD(auth).get_by_id_crud(id=user.dept_id)
-            UserOutSchema.dept_name = dept.name if dept else None
+        if user and user.dept:
+            UserOutSchema.dept_name = user.dept.name
         user_dict = UserOutSchema.model_validate(user).model_dump()
 
         # 获取菜单权限
         if auth.user and auth.user.is_superuser:
             # 使用树形结构查询，预加载children关系
-            menu_all = await MenuCRUD(auth).get_tree_list_crud(search={'type': ('in', [1, 2, 4]), 'status': True}, order_by=[{"order": "asc"}])
+            menu_all = await MenuCRUD(auth).get_tree_list_crud(search={'type': ('in', [1, 2, 4]), 'status': '0'}, order_by=[{"order": "asc"}])
             menus = [MenuOutSchema.model_validate(menu).model_dump() for menu in menu_all]
             
         else:

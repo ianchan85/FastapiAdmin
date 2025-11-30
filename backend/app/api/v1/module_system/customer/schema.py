@@ -12,7 +12,7 @@ class CustomerCreateSchema(BaseModel):
     """新增模型"""
     name: str = Field(..., max_length=64, description='客户名称')
     code: Optional[str] = Field(default=None, max_length=20, description='客户编码')    
-    status: str = Field(default="0", description="是否启用(True:启用 False:禁用)")
+    status: str = Field(default="0", description="是否启用(0:启用 1:禁用)")
     description: Optional[str] = Field(default=None, max_length=255, description="描述")
 
     @field_validator('name')    

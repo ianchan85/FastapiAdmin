@@ -14,7 +14,7 @@ class ApplicationCreateSchema(BaseModel):
     name: str = Field(..., max_length=64, description='应用名称')
     access_url: str = Field(..., max_length=255, description="访问地址")
     icon_url: Optional[str] = Field(None, max_length=300, description="应用图标URL")
-    status: str = Field(True, description="是否启用(True:启用 False:禁用)")
+    status: str = Field(True, description="是否启用(0:启用 1:禁用)")
     description: Optional[str] = Field(default=None, max_length=255, description="描述")
 
     @field_validator('access_url')

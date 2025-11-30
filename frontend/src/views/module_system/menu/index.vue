@@ -108,10 +108,10 @@
                 </el-button>
                 <template #dropdown>
                   <el-dropdown-menu>
-                    <el-dropdown-item icon="Check" @click="handleMoreClick(true)">
+                    <el-dropdown-item icon="Check" @click="handleMoreClick('0')">
                       批量启用
                     </el-dropdown-item>
-                    <el-dropdown-item icon="CircleClose" @click="handleMoreClick(false)">
+                    <el-dropdown-item icon="CircleClose" @click="handleMoreClick('1')">
                       批量停用
                     </el-dropdown-item>
                   </el-dropdown-menu>
@@ -171,7 +171,7 @@
         </el-table-column>
         <el-table-column label="状态" prop="status" min-width="80" align="center">
           <template #default="scope">
-            <el-tag :type="scope.row.status === true ? 'success' : 'danger'">
+            <el-tag :type="scope.row.status === '0' ? 'success' : 'danger'">
               {{ scope.row.status ? "启用" : "停用" }}
             </el-tag>
           </template>
@@ -631,7 +631,7 @@
 
           <el-form-item label="状态" prop="status">
             <el-radio-group v-model="formData.status">
-              <el-radio :value="true">启用</el-radio>
+              <el-radio :value="0">启用</el-radio>
               <el-radio :value="false">禁用</el-radio>
             </el-radio-group>
           </el-form-item>
@@ -699,8 +699,7 @@ const detailFormData = ref<MenuTable>({});
 const queryFormData = reactive<MenuPageQuery>({
   name: undefined,
   status: undefined,
-  start_time: undefined,
-  end_time: undefined,
+  created_time: undefined,
 });
 
 // 编辑表单
@@ -722,7 +721,7 @@ const formData = reactive<MenuForm>({
   title: "",
   params: undefined,
   affix: false,
-  status: true,
+  status: '0',
   description: undefined,
 });
 
@@ -783,11 +782,9 @@ const dateRange = ref<[Date, Date] | []>([]);
 function handleDateRangeChange(range: [Date, Date]) {
   dateRange.value = range;
   if (range && range.length === 2) {
-    queryFormData.start_time = formatToDateTime(range[0]);
-    queryFormData.end_time = formatToDateTime(range[1]);
+    queryFormData.created_time = [formatToDateTime(range[0]), formatToDateTime(range[1])];
   } else {
-    queryFormData.start_time = undefined;
-    queryFormData.end_time = undefined;
+    queryFormData.created_time = undefined;
   }
 }
 
@@ -839,8 +836,7 @@ async function handleResetQuery() {
   queryFormRef.value.resetFields();
   // 额外清空日期范围与时间查询参数
   dateRange.value = [];
-  queryFormData.start_time = undefined;
-  queryFormData.end_time = undefined;
+  queryFormData.created_time = undefined;
   handleQuery();
 }
 
@@ -863,7 +859,7 @@ const initialFormData: MenuForm = {
   title: "",
   params: [] as { key: string; value: string }[],
   affix: false,
-  status: true,
+  status: '0',
   description: undefined,
 };
 
@@ -983,8 +979,8 @@ async function handleDelete(ids: number[]) {
 }
 
 // 批量启用/停用
-async function handleMoreClick(status: boolean) {
-  ElMessageBox.confirm(`确认${status ? "启用" : "停用"}该项数据?`, "警告", {
+async function handleMoreClick(status: string) {
+  ElMessageBox.confirm(`确认${status === "0" ? "启用" : "停用"}该项数据?`, "警告", {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
     type: "warning",
