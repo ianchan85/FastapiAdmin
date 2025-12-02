@@ -156,7 +156,11 @@
         >
           <template #default="scope">
             <el-text>{{ scope.row.ipaddr }}</el-text>
-            <CopyButton v-if="scope.row.ipaddr" :text="scope.row.ipaddr" :style="{ marginLeft: '2px' }" />
+            <CopyButton
+              v-if="scope.row.ipaddr"
+              :text="scope.row.ipaddr"
+              :style="{ marginLeft: '2px' }"
+            />
           </template>
         </el-table-column>
         <el-table-column

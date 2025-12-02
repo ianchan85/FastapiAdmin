@@ -446,7 +446,7 @@ const formData = reactive<DeptForm>({
   code: undefined,
   order: 1,
   parent_id: undefined,
-  status: '0',
+  status: "0",
   description: undefined,
 });
 
@@ -512,7 +512,7 @@ const initialFormData: DeptForm = {
   name: undefined,
   order: 1,
   parent_id: undefined,
-  status: '0',
+  status: "0",
   description: undefined,
 };
 

@@ -141,7 +141,7 @@
         <el-table-column label="执行状态" prop="status" min-width="100" show-overflow-tooltip>
           <template #default="scope">
             <el-tag :type="scope.row.status === '0' ? 'primary' : 'success'">
-              {{ scope.row.status === '0' ? "运行中" : "完成" }}
+              {{ scope.row.status === "0" ? "运行中" : "完成" }}
             </el-tag>
           </template>
         </el-table-column>
@@ -231,7 +231,7 @@
           </el-descriptions-item>
           <el-descriptions-item label="执行状态" :span="2">
             <el-tag :type="detailFormData.status === '0' ? 'primary' : 'success'">
-              {{ detailFormData.status === '0' ? "运行中" : "完成" }}
+              {{ detailFormData.status === "0" ? "运行中" : "完成" }}
             </el-tag>
           </el-descriptions-item>
           <el-descriptions-item label="执行信息" :span="2">

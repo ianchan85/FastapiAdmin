@@ -40,10 +40,16 @@
         </el-form-item>
         <!-- 时间范围，收起状态下隐藏 -->
         <el-form-item v-if="isExpand" prop="created_time" label="创建时间">
-          <DatePicker v-model="createdDateRange" @update:model-value="handleCreatedDateRangeChange" />
+          <DatePicker
+            v-model="createdDateRange"
+            @update:model-value="handleCreatedDateRangeChange"
+          />
         </el-form-item>
         <el-form-item v-if="isExpand" prop="updated_time" label="更新时间">
-          <DatePicker v-model="updatedDateRange" @update:model-value="handleUpdatedDateRangeChange" />
+          <DatePicker
+            v-model="updatedDateRange"
+            @update:model-value="handleUpdatedDateRangeChange"
+          />
         </el-form-item>
         <!-- 查询、重置、展开/收起按钮 -->
         <el-form-item>
@@ -545,7 +551,7 @@ const queryFormData = reactive<DemoPageQuery>({
 const formData = reactive<DemoForm>({
   id: undefined,
   name: "",
-  status: '0',
+  status: "0",
   description: undefined,
 });
 
@@ -624,7 +630,7 @@ async function handleResetQuery() {
 const initialFormData: DemoForm = {
   id: undefined,
   name: "",
-  status: '0',
+  status: "0",
   description: "",
 };
 

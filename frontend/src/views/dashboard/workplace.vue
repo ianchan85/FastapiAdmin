@@ -312,7 +312,7 @@ const listNotice = async () => {
     const response = await NoticeAPI.listNotice({
       page_no: 1,
       page_size: 10,
-      status: '0', // 只获取启用的公告
+      status: "0", // 只获取启用的公告
     });
     if (response.data.code === 0) {
       noticeList.value = response.data.data.items;

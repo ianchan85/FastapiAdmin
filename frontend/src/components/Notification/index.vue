@@ -113,7 +113,7 @@ function handleMarkAllAsRead() {
   const ids = noticeList.value
     .map((item) => item.id)
     .filter((id): id is number => id !== undefined);
-  NoticeAPI.batchNotice({ ids, status: '1' }).then(async () => {
+  NoticeAPI.batchNotice({ ids, status: "1" }).then(async () => {
     await noticeStore.getNotice();
     noticeList.value = noticeStore.noticeList;
   });

@@ -468,7 +468,7 @@ const formData = reactive<DictForm>({
   id: undefined,
   dict_name: "",
   dict_type: "",
-  status: '0',
+  status: "0",
   description: undefined,
 });
 
@@ -516,7 +516,6 @@ const currentDictLabel = ref("");
 // 添加字典类型ID变量
 const currentDictTypeId = ref(1);
 
-
 // 加载表格数据
 async function loadingData() {
   loading.value = true;
@@ -552,7 +551,7 @@ const initialFormData: DictForm = {
   id: undefined,
   dict_name: "",
   dict_type: "",
-  status: '0',
+  status: "0",
   description: undefined,
 };
 

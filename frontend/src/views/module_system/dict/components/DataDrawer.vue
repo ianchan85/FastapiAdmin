@@ -158,7 +158,7 @@
         <el-table-column label="状态" prop="status" min-width="100" show-overflow-tooltip>
           <template #default="scope">
             <el-tag :type="scope.row.status === '0' ? 'success' : 'danger'">
-              {{ scope.row.status === '0' ? "启用" : "停用" }}
+              {{ scope.row.status === "0" ? "启用" : "停用" }}
             </el-tag>
           </template>
         </el-table-column>
@@ -456,7 +456,7 @@ const formData = reactive<DictDataForm>({
   css_class: "",
   list_class: undefined,
   is_default: false,
-  status: '0',
+  status: "0",
   description: "",
   dict_type_id: undefined,
 });
@@ -539,7 +539,7 @@ const initialFormData: DictDataForm = {
   css_class: "",
   list_class: undefined,
   is_default: false,
-  status: '0',
+  status: "0",
   description: "",
   dict_type_id: props.dictTypeId,
 };
@@ -583,7 +583,7 @@ async function handleOpenDialog(type: "create" | "update" | "detail", id?: numbe
     // 重置为初始值并确保状态默认开启
     Object.assign(formData, initialFormData);
     formData.dict_type = props.dictType;
-    formData.status = '0';
+    formData.status = "0";
     formData.id = undefined;
   }
   dialogVisible.visible = true;

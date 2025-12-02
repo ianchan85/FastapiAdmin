@@ -721,7 +721,7 @@ const formData = reactive<MenuForm>({
   title: "",
   params: undefined,
   affix: false,
-  status: '0',
+  status: "0",
   description: undefined,
 });
 
@@ -859,7 +859,7 @@ const initialFormData: MenuForm = {
   title: "",
   params: [] as { key: string; value: string }[],
   affix: false,
-  status: '0',
+  status: "0",
   description: undefined,
 };
 

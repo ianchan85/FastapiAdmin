@@ -26,11 +26,17 @@
         </el-form-item>
         <!-- 时间范围，收起状态下隐藏 -->
         <el-form-item v-if="isExpand" prop="created_time" label="创建时间">
-          <DatePicker v-model="createdDateRange" @update:model-value="handleCreatedDateRangeChange" />
+          <DatePicker
+            v-model="createdDateRange"
+            @update:model-value="handleCreatedDateRangeChange"
+          />
         </el-form-item>
         <!-- 更新时间范围，收起状态下隐藏 -->
         <el-form-item v-if="isExpand" prop="updated_time" label="更新时间">
-          <DatePicker v-model="updatedDateRange" @update:model-value="handleUpdatedDateRangeChange" />
+          <DatePicker
+            v-model="updatedDateRange"
+            @update:model-value="handleUpdatedDateRangeChange"
+          />
         </el-form-item>
         <el-form-item v-if="isExpand" prop="created_id" label="创建人">
           <UserTableSelect
@@ -218,7 +224,6 @@
         <el-table-column label="描述" prop="description" min-width="100" />
         <el-table-column label="创建时间" prop="created_time" min-width="200" sortable />
         <el-table-column label="更新时间" prop="updated_time" min-width="200" sortable />
-        
 
         <OperationColumn :list-data-length="pageTableData.length">
           <template #default="scope">

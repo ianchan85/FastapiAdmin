@@ -218,7 +218,7 @@
             <el-table-column label="状态" prop="status" min-width="100">
               <template #default="scope">
                 <el-tag :type="scope.row.status === '0' ? 'success' : 'danger'">
-                  {{ scope.row.status === '0' ? "启用" : "停用" }}
+                  {{ scope.row.status === "0" ? "启用" : "停用" }}
                 </el-tag>
               </template>
             </el-table-column>
@@ -641,7 +641,7 @@ const formData = reactive<UserForm>({
   email: undefined,
   mobile: undefined,
   is_superuser: false, //默认不是超管
-  status: '0',
+  status: "0",
   description: undefined,
 });
 
@@ -790,7 +790,7 @@ const initialFormData: UserForm = {
   email: undefined,
   mobile: undefined,
   is_superuser: false, //默认不是超管
-  status: '0',
+  status: "0",
   description: undefined,
 };
 

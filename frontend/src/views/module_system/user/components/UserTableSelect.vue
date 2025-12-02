@@ -8,7 +8,7 @@
   >
     <template #status="scope">
       <el-tag :type="scope.row[scope.prop] === '0' ? 'success' : 'danger'">
-        {{ scope.row[scope.prop] === '0' ? "启用" : "停用" }}
+        {{ scope.row[scope.prop] === "0" ? "启用" : "停用" }}
       </el-tag>
     </template>
   </table-select>
@@ -39,7 +39,7 @@ const selectConfig: ISelectConfig = {
       type: "select",
       label: "状态",
       prop: "status",
-      initialValue: '0',
+      initialValue: "0",
       attrs: {
         placeholder: "全部",
         clearable: true,

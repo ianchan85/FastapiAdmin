@@ -246,7 +246,7 @@
         >
           <template #default="scope">
             <el-tag :type="scope.row.status === '0' ? 'success' : 'danger'">
-              {{ scope.row.status === '0' ? "启用" : "停用" }}
+              {{ scope.row.status === "0" ? "启用" : "停用" }}
             </el-tag>
           </template>
         </el-table-column>
@@ -563,7 +563,7 @@ const formData = reactive<RoleForm>({
   name: undefined,
   order: 1,
   code: undefined,
-  status: '0',
+  status: "0",
   description: undefined,
 });
 
@@ -633,7 +633,7 @@ const initialFormData: RoleForm = {
   name: undefined,
   order: 1,
   code: undefined,
-  status: '0',
+  status: "0",
   description: undefined,
 };
 

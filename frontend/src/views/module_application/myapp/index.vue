@@ -281,7 +281,8 @@ const queryFormData = reactive<ApplicationPageQuery>({
   page_no: 1,
   page_size: 12,
   name: undefined,
-  status: undefined,  created_id: undefined,
+  status: undefined,
+  created_id: undefined,
 });
 
 // 应用列表数据
@@ -292,7 +293,7 @@ const formData = reactive<ApplicationForm>({
   name: "",
   access_url: "",
   icon_url: "",
-  status: '0',
+  status: "0",
   description: "",
 });
 
@@ -465,7 +466,7 @@ function resetForm() {
     name: "",
     access_url: "",
     icon_url: "",
-    status: '0',
+    status: "0",
     description: "",
   });
   formRef.value?.resetFields();
@@ -532,8 +533,8 @@ onMounted(() => {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 16px;
-  padding: 0 2px;
   justify-items: stretch;
+  padding: 0 2px;
 
   @media (max-width: 768px) {
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
