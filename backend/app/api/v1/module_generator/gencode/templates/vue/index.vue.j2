@@ -530,7 +530,7 @@ const curdContentConfig = {
     query.page_size = 9999;
     const all: any[] = [];
     while (true) {
-      const res = await {{ class_name }}API.get{{ class_name }}List(query);
+      const res = await {{ class_name }}API.list{{ class_name }}(query);
       const items = res.data?.data?.items || [];
       const total = res.data?.data?.total || 0;
       all.push(...items);
@@ -572,18 +572,16 @@ function handleUpdatedDateRangeChange(range: [Date, Date]) {
 const queryFormData = reactive<{{ class_name }}PageQuery>({
   page_no: 1,
   page_size: 10,
-  name: undefined,
-  status: undefined,
-  created_time: undefined,
-  updated_time: undefined,
-  created_id: undefined,
-  updated_id: undefined,
+  {% for column in columns %}
+  {% if column.is_query == 1 %}
+  {{ column.column_name }}: undefined,
+  {% endif %}
+  {% endfor %}
 });
 
 
 // 编辑表单
 const formData = reactive<{{ class_name }}Form>({
-  id: undefined,
   {% for column in columns %}
   {% if column.is_insert == 1 or column.is_edit == 1 %}
   {{ column.column_name }}: undefined,
@@ -635,7 +633,7 @@ async function handleRefresh() {
 async function loadingData() {
   loading.value = true;
   try {
-    const response = await {{ class_name }}API.get{{ class_name }}List(queryFormData);
+    const response = await {{ class_name }}API.list{{ class_name }}(queryFormData);
     pageTableData.value = response.data.data.items;
     total.value = response.data.data.total;
   } catch (error: any) {
@@ -670,7 +668,6 @@ async function handleResetQuery() {
 
 // 定义初始表单数据常量
 const initialFormData: {{ class_name }}Form = {
-  id: undefined,
   {% for column in columns %}
   {% if column.is_insert == 1 or column.is_edit == 1 %}
   {{ column.column_name }}: undefined,
@@ -704,7 +701,7 @@ async function handleCloseDialog() {
 async function handleOpenDialog(type: "create" | "update" | "detail", id?: number) {
   dialogVisible.type = type;
   if (id) {
-    const response = await {{ class_name }}API.get{{ class_name }}Detail(id);
+    const response = await {{ class_name }}API.detail{{ class_name }}(id);
     if (type === "detail") {
       dialogVisible.title = "详情";
       Object.assign(detailFormData.value, response.data.data);

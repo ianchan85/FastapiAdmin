@@ -10,6 +10,7 @@ from app.config.path_conf import TEMPLATE_DIR
 from app.config.setting import settings
 from app.utils.common_util import CamelCaseUtil, SnakeCaseUtil
 from app.utils.string_util import StringUtil
+from app.utils.common_util import uuid4_str
 
 from app.api.v1.module_generator.gencode.schema import GenTableOutSchema, GenTableColumnOutSchema
 
@@ -54,6 +55,7 @@ class Jinja2TemplateUtil:
                         'camel_to_snake': SnakeCaseUtil.camel_to_snake,
                         'snake_to_camel': CamelCaseUtil.snake_to_camel,
                         'get_sqlalchemy_type': cls.get_sqlalchemy_type,
+                        'set_uuid': uuid4_str,
                     }
                 )
             return cls._env
