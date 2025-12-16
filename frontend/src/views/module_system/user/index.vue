@@ -190,7 +190,7 @@
             highlight-current-row
             class="data-table__content"
             height="450"
-        max-height="450px"
+            max-height="450px"
             border
             stripe
             @selection-change="handleSelectionChange"
