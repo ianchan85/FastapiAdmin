@@ -13,7 +13,7 @@ class DictTypeModel(ModelMixin):
     __tablename__: str = "sys_dict_type"
     __table_args__: dict[str, str] = ({'comment': '字典类型表'})
 
-    dict_name: Mapped[str] = mapped_column(String(255), nullable=False, comment='字典名称')
+    dict_name: Mapped[str] = mapped_column(String(64), nullable=False, comment='字典名称')
     dict_type: Mapped[str] = mapped_column(String(255), nullable=False, unique=True, comment='字典类型')
     
     # 关系定义

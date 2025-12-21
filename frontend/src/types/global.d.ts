@@ -137,24 +137,6 @@ declare global {
   }
 
   /**
-   * 创建人
-   */
-  interface creatorType {
-    id?: number;
-    name?: string;
-    username?: string;
-  }
-
-  /**
-   * 更新人
-   */
-  interface updatorType {
-    id?: number;
-    name?: string;
-    username?: string;
-  }
-
-  /**
    * 基础类型
    */
   interface BaseType {

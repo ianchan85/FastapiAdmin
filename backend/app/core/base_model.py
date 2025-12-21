@@ -9,6 +9,8 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from app.api.v1.module_system.user.model import UserModel
+    from app.api.v1.module_system.customer.model import CustomerModel
+    from app.api.v1.module_system.tenant.model import TenantModel
 
 from app.utils.common_util import uuid4_str
 
@@ -114,5 +116,64 @@ class UserMixin(MappedBase):
             "UserModel",
             lazy="selectin",
             foreign_keys=lambda: cls.updated_id,
+            uselist=False
+        )
+
+
+class TenantMixin(MappedBase):
+    """
+    租户字段 Mixin
+    """
+    __abstract__: bool = True
+
+    tenant_id: Mapped[int | None] = mapped_column(
+        Integer,
+        ForeignKey('sys_tenant.id', ondelete="CASCADE", onupdate="CASCADE"),
+        nullable=False,
+        index=True,
+        comment="所属租户ID"
+    )
+
+    @declared_attr
+    def tenant(cls) -> Mapped["TenantModel"]:
+        """
+        租户关联关系（延迟加载，避免循环依赖）
+        """
+        return relationship(
+            "TenantModel",
+            primaryjoin=f"{cls.__name__}.tenant_id == TenantModel.id",
+            lazy="selectin",
+            foreign_keys=lambda: [cls.tenant_id],
+            viewonly=True,
+            uselist=False
+        )
+
+
+class CustomerMixin(MappedBase):
+    """
+    客户隔离字段 Mixin
+    """
+    __abstract__: bool = True
+
+    customer_id: Mapped[int | None] = mapped_column(
+        Integer,
+        ForeignKey('sys_customer.id', ondelete="CASCADE", onupdate="CASCADE"),
+        default=None,
+        nullable=True,
+        index=True,
+        comment="所属客户ID(NULL表示租户级数据,>0表示客户级数据)"
+    )
+
+    @declared_attr
+    def customer(cls) -> Mapped["CustomerModel"]:
+        """
+        客户关联关系（延迟加载，避免循环依赖）
+        """
+        return relationship(
+            "CustomerModel",
+            primaryjoin=f"{cls.__name__}.customer_id == CustomerModel.id",
+            lazy="selectin",
+            foreign_keys=lambda: [cls.customer_id],
+            viewonly=True,
             uselist=False
         )
