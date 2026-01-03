@@ -386,9 +386,9 @@ docker compose down
 
 ## 🎨 社区交流
 
-| 微信二维码 | 群组二维码 | 微信支付二维码 |
-| --- | --- | --- |
-| ![微信二维码](https://gitee.com/tao__tao/FastDocs/raw/main/src/public/wechat.jpg) | ![群组二维码](https://gitee.com/tao__tao/FastDocs/raw/main/src/public/group.jpg) | ![微信支付二维码](https://gitee.com/tao__tao/FastDocs/raw/main/src/public/wechatPay.jpg) |
+| 群组二维码 | 微信支付二维码 |
+| --- | --- |
+| ![群组二维码](https://gitee.com/tao__tao/FastDocs/raw/main/src/public/group.jpg) | ![微信支付二维码](https://gitee.com/tao__tao/FastDocs/raw/main/src/public/wechatPay.jpg) |
 
 ## ❤️ 支持项目
 

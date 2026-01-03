@@ -386,9 +386,9 @@ Thanks to the contributions and support of the following open-source projects:
 
 ## 🎨 Community
 
-| WeChat QR Code | Group QR Code | WeChat Pay QR Code |
-| --- | --- | --- |
-| ![WeChat QR Code](https://gitee.com/tao__tao/FastDocs/raw/main/src/public/wechat.jpg) | ![Group QR Code](https://gitee.com/tao__tao/FastDocs/raw/main/src/public/group.jpg) | ![WeChat Pay QR Code](https://gitee.com/tao__tao/FastDocs/raw/main/src/public/wechatPay.jpg) |
+| Group QR Code | WeChat Pay QR Code |
+| --- | --- |
+| ![Group QR Code](https://gitee.com/tao__tao/FastDocs/raw/main/src/public/group.jpg) | ![WeChat Pay QR Code](https://gitee.com/tao__tao/FastDocs/raw/main/src/public/wechatPay.jpg) |
 
 ## ❤️ Support the Project
 
