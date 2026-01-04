@@ -208,20 +208,29 @@ class Jinja2TemplateUtil:
         """
         columns = gen_table.columns or []
         import_list = set()
+        has_datetime_type = False
+        
         for column in columns:
-            if column.python_type in GenConstant.TYPE_DATE:
-                import_list.add(f'from datetime import {column.python_type}')
+            # 处理嵌套的datetime类型，如datetime.date、datetime.time、datetime.datetime
+            if column.python_type.startswith('datetime.') or column.python_type in GenConstant.TYPE_DATE:
+                has_datetime_type = True
             elif column.python_type == GenConstant.TYPE_DECIMAL:
                 import_list.add('from decimal import Decimal')
+        
         if gen_table.sub:
             if gen_table.sub_table and gen_table.sub_table.columns:
                 sub_columns = gen_table.sub_table.columns or []
                 for sub_column in sub_columns:
-                    if sub_column.python_type in GenConstant.TYPE_DATE:
-                        import_list.add(f'from datetime import {sub_column.python_type}')
+                    # 处理嵌套的datetime类型，如datetime.date、datetime.time、datetime.datetime
+                    if sub_column.python_type.startswith('datetime.') or sub_column.python_type in GenConstant.TYPE_DATE:
+                        has_datetime_type = True
                     elif sub_column.python_type == GenConstant.TYPE_DECIMAL:
                         import_list.add('from decimal import Decimal')
-        return cls.merge_same_imports(list(import_list), 'from datetime import')
+        
+        if has_datetime_type:
+            import_list.add('import datetime')
+        
+        return import_list
 
     @classmethod
     def get_model_import_list(cls, gen_table: GenTableOutSchema):
@@ -242,6 +251,11 @@ class Jinja2TemplateUtil:
                 import_list.add(
                     f'from sqlalchemy import {StringUtil.get_mapping_value_by_key_ignore_case(GenConstant.DB_TO_SQLALCHEMY, data_type)}'
                 )
+            # 处理datetime类型的导入
+            if column.python_type and '.' in column.python_type:
+                datetime_type = column.python_type.split('.')[0]
+                if datetime_type == 'datetime':
+                    import_list.add('import datetime')
         if gen_table.sub:
             import_list.add('from sqlalchemy import ForeignKey')
             if gen_table.sub_table and gen_table.sub_table.columns:
@@ -252,6 +266,11 @@ class Jinja2TemplateUtil:
                         import_list.add(
                             f'from sqlalchemy import {StringUtil.get_mapping_value_by_key_ignore_case(GenConstant.DB_TO_SQLALCHEMY, data_type)}'
                         )
+                    # 处理datetime类型的导入
+                    if sub_column.python_type and '.' in sub_column.python_type:
+                        datetime_type = sub_column.python_type.split('.')[0]
+                        if datetime_type == 'datetime':
+                            import_list.add('import datetime')
         return cls.merge_same_imports(list(import_list), 'from sqlalchemy import')
 
     @classmethod
@@ -363,33 +382,60 @@ class Jinja2TemplateUtil:
         获取 SQLAlchemy 类型。
 
         参数:
-        - column_type (Any): 列类型或包含 `column_type` 属性的对象。
+        - column (Any): 列对象或列类型字符串。
         
         返回:
         - str: SQLAlchemy 类型字符串。
         """
-        if '(' in column:
-            column_type_list = column.split('(')
-            column_type = column_type_list[0]
+        # 获取column_type和column_length
+        column_type = column
+        column_length = None
+        
+        # 检查是否是对象
+        if hasattr(column, 'column_type'):
+            column_type = column.column_type or ''
+            column_length = column.column_length or None
+        
+        # 首先尝试匹配完整类型（包括括号）
+        sqlalchemy_type = StringUtil.get_mapping_value_by_key_ignore_case(
+            GenConstant.DB_TO_SQLALCHEMY, column_type
+        )
+        
+        if sqlalchemy_type is None and '(' in column_type:
+            # 如果没有匹配到，再尝试剥离括号
+            column_type_list = column_type.split('(')
+            col_type = column_type_list[0]
             # 将 'character' 映射为 'char' 以匹配常量定义
-            if column_type.lower() == 'character':
-                column_type = 'char'
+            if col_type.lower() == 'character':
+                col_type = 'char'
             sqlalchemy_type = StringUtil.get_mapping_value_by_key_ignore_case(
-                GenConstant.DB_TO_SQLALCHEMY, column_type
+                GenConstant.DB_TO_SQLALCHEMY, col_type
             )
             # 如果是字符串类型且包含括号参数，保持原参数
             if sqlalchemy_type in ["String", "CHAR"]:
                 sqlalchemy_type += '(' + column_type_list[1]
-        else:
-            column_type = column
+        elif sqlalchemy_type is None:
+            # 处理没有括号的类型
+            col_type = column_type
             # 将 'character' 映射为 'char' 以匹配常量定义
-            if column_type.lower() == 'character':
-                column_type = 'char'
+            if col_type.lower() == 'character':
+                col_type = 'char'
             sqlalchemy_type = StringUtil.get_mapping_value_by_key_ignore_case(
-                GenConstant.DB_TO_SQLALCHEMY, column_type
+                GenConstant.DB_TO_SQLALCHEMY, col_type
             )
-            # 如果是字符串类型且没有指定长度，添加默认长度255
+            # 如果是字符串类型且没有指定长度，使用column_length或默认255
             if sqlalchemy_type in ["String", "CHAR"]:
-                sqlalchemy_type += '(255)'
+                length = column_length if column_length and column_length.isdigit() else '255'
+                sqlalchemy_type += f'({length})'
+        else:
+            # 对于已经匹配到的类型，如果是字符串类型且column有长度信息，添加长度
+            if sqlalchemy_type in ["String", "CHAR"] and not '(' in sqlalchemy_type:
+                # 检查column_length是否有效
+                length = column_length if column_length and column_length.isdigit() else '255'
+                sqlalchemy_type += f'({length})'
 
+        # 如果没有找到匹配的类型，使用String(column_length)或String(255)作为默认类型
+        if not sqlalchemy_type:
+            length = column_length if column_length and column_length.isdigit() else '255'
+            sqlalchemy_type = f'String({length})'
         return sqlalchemy_type

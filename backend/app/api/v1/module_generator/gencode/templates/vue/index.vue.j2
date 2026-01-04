@@ -46,11 +46,17 @@
         </el-form-item>
         {% elif column.column_name == "created_time"%}
         <el-form-item v-if="isExpand" prop="created_time" label="创建时间">
-          <DatePicker v-model="createdDateRange" @update:model-value="handleCreatedDateRangeChange" />
+          <DatePicker
+            v-model="createdDateRange"
+            @update:model-value="handleCreatedDateRangeChange"
+          />
         </el-form-item>
         {% elif column.column_name == "updated_time"%}
         <el-form-item v-if="isExpand" prop="updated_time" label="更新时间">
-          <DatePicker v-model="updatedDateRange" @update:model-value="handleUpdatedDateRangeChange" />
+          <DatePicker
+            v-model="updatedDateRange"
+            @update:model-value="handleUpdatedDateRangeChange"
+          />
         </el-form-item>
         {% elif column.html_type == "input" %}
         <el-form-item label="{{ comment }}" prop="{{ column.column_name }}">
@@ -266,11 +272,23 @@
         {% set parentheseIndex = column_comment.find("（") %}
         {% set comment = column_comment[:parentheseIndex] if parentheseIndex != -1 else column_comment %}
         {% if column.is_list == 1 %}
-        <el-table-column v-if="tableColumns.find((col) => col.prop === '{{ python_field }}')?.show" label="{{ comment }}" prop="{{ python_field }}" min-width="140">
+        <el-table-column
+          v-if="tableColumns.find((col) => col.prop === '{{ python_field }}')?.show"
+          label="{{ comment }}"
+          prop="{{ python_field }}"
+          min-width="140"
+        />
+        {% if python_field in ['status', 'created_id', 'updated_id'] %}
+        <el-table-column
+          v-if="tableColumns.find((col) => col.prop === '{{ python_field }}')?.show"
+          label="{{ comment }}"
+          prop="{{ python_field }}"
+          min-width="140"
+        >
           {% if python_field == "status" %}
           <template #default="scope">
             <el-tag :type="scope.row.status == '0' ? 'success' : 'info'">
-              {{ '{{' }} scope.row.status == '0' ? '启用' : '停用' {{ '}}' }}
+              {{ '{{' }} scope.row.status == "0" ? "启用" : "停用" {{ '}}' }}
             </el-tag>
           </template>
           {% elif python_field == "created_id" %}
@@ -283,6 +301,7 @@
           </template>
           {% endif %}
         </el-table-column>
+        {% endif %}
         {% endif %}
         {% endfor %}
         <el-table-column
@@ -348,35 +367,42 @@
       <template v-if="dialogVisible.type === 'detail'">
         <el-descriptions :column="4" border>
           {% for column in columns %}
-            {% set column_comment = column.column_comment if column.column_comment else '' %}
-            {% set parentheseIndex = column_comment.find("（") %}
-            {% set comment = column_comment[:parentheseIndex] if parentheseIndex != -1 else column_comment %}
-            {% if column.column_name == 'status' %}
-            <el-descriptions-item label="状态" :span="2">
-              <el-tag :type="detailFormData.status == '0' ? 'success' : 'danger'">
-                {{ '{{' }} detailFormData.status == '0' ? "启用" : "停用" {{ '}}' }}
-              </el-tag>
-            </el-descriptions-item>
-            {% elif column.column_name == 'created_id' %}
-            <el-descriptions-item label="创建人" :span="2">
-              {{ '{{' }} detailFormData.created_by?.name {{ '}}' }}
-            </el-descriptions-item>
-            {% elif column.column_name == 'updated_id' %}
-            <el-descriptions-item label="更新人" :span="2">
-              {{ '{{' }} detailFormData.updated_by?.name {{ '}}' }}
-            </el-descriptions-item>
-            {% else %}
-            <el-descriptions-item label="{{ comment }}" :span="2">
-              {{ '{{' }} detailFormData.{{ column.column_name }} {{ '}}' }}
-            </el-descriptions-item>
-            {% endif %}
+          {% set column_comment = column.column_comment if column.column_comment else '' %}
+          {% set parentheseIndex = column_comment.find("（") %}
+          {% set comment = column_comment[:parentheseIndex] if parentheseIndex != -1 else column_comment %}
+          {% if column.column_name == 'status' %}
+          <el-descriptions-item label="状态" :span="2">
+            <el-tag :type="detailFormData.status == '0' ? 'success' : 'danger'">
+              {{ '{{' }} detailFormData.status == "0" ? "启用" : "停用" {{ '}}' }}
+            </el-tag>
+          </el-descriptions-item>
+          {% elif column.column_name == 'created_id' %}
+          <el-descriptions-item label="创建人" :span="2">
+            {{ '{{' }} detailFormData.created_by?.name {{ '}}' }}
+          </el-descriptions-item>
+          {% elif column.column_name == 'updated_id' %}
+          <el-descriptions-item label="更新人" :span="2">
+            {{ '{{' }} detailFormData.updated_by?.name {{ '}}' }}
+          </el-descriptions-item>
+          {% else %}
+          <el-descriptions-item label="{{ comment }}" :span="2">
+            {{ '{{' }} detailFormData.{{ column.column_name }} {{ '}}' }}
+          </el-descriptions-item>
+          {% endif %}
           {% endfor %}
         </el-descriptions>
       </template>
 
       <!-- 新增、编辑表单 -->
       <template v-else>
-        <el-form ref="dataFormRef" :model="formData" :rules="rules" label-suffix=":" label-width="auto" label-position="right">
+        <el-form
+          ref="dataFormRef"
+          :model="formData"
+          :rules="rules"
+          label-suffix=":"
+          label-width="auto"
+          label-position="right"
+        >
           {% for column in columns %}
           {% if column.is_insert == 1 or column.is_edit == 1 %}
           {% set dict_type = column.dict_type %}
@@ -482,17 +508,21 @@ defineOptions({
   inheritAttrs: false,
 });
 
-import { ref, reactive, onMounted } from 'vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
-import { QuestionFilled, ArrowUp, ArrowDown, Check, CircleClose } from '@element-plus/icons-vue'
+import { ref, reactive, onMounted } from "vue";
+import { ElMessage, ElMessageBox } from "element-plus";
+import { QuestionFilled, ArrowUp, ArrowDown, Check, CircleClose } from "@element-plus/icons-vue";
 import { formatToDateTime } from "@/utils/dateUtil";
 import { useDictStore } from "@/store";
-import { ResultEnum } from '@/enums/api/result.enum'
+import { ResultEnum } from "@/enums/api/result.enum";
 import DatePicker from "@/components/DatePicker/index.vue";
 import type { IContentConfig } from "@/components/CURD/types";
 import ImportModal from "@/components/CURD/ImportModal.vue";
 import ExportModal from "@/components/CURD/ExportModal.vue";
-import {{ class_name }}API, { {{ class_name }}PageQuery, {{ class_name }}Table, {{ class_name }}Form } from '@/api/{{ module_name }}/{{ business_name }}'
+import {{ class_name }}API, {
+  {{ class_name }}PageQuery,
+  {{ class_name }}Table,
+  {{ class_name }}Form,
+} from "@/api/{{ module_name }}/{{ business_name }}";
 
 const visible = ref(true);
 const isExpand = ref(false);
@@ -505,14 +535,14 @@ const selectionRows = ref<{{ class_name }}Table[]>([]);
 const loading = ref(false);
 
 // 字典仓库与需要加载的字典类型
-const dictStore = useDictStore()
+const dictStore = useDictStore();
 const dictTypes: any = [
   {% for column in columns %}
   {% if column.dict_type %}
-  '{{ column.dict_type }}',
+  "{{ column.dict_type }}",
   {% endif %}
   {% endfor %}
-]
+];
 
 // 分页表单
 const pageTableData = ref<{{ class_name }}Table[]>([]);
@@ -523,20 +553,20 @@ const tableColumns = ref([
   { prop: "index", label: "序号", show: true },
   {% for column in columns %}
   {% if column.is_list == 1 %}
-  { prop: '{{ column.column_name }}', label: '{{ column.column_comment or column.column_name }}', show: true },
+  { prop: "{{ column.column_name }}", label: "{{ column.column_comment or column.column_name }}", show: true },
   {% endif %}
   {% endfor %}
-  { prop: 'operation', label: '操作', show: true }
+  { prop: "operation", label: "操作", show: true },
 ]);
 
 // 导出列（不含选择/序号/操作）
 const exportColumns = [
   {% for column in columns %}
   {% if column.is_list == 1 %}
-  { prop: '{{ column.column_name }}', label: '{{ column.column_comment or column.column_name }}' },
+  { prop: "{{ column.column_name }}", label: "{{ column.column_comment or column.column_name }}" },
   {% endif %}
   {% endfor %}
-]
+];
 
 // 导入/导出配置
 const curdContentConfig = {
@@ -545,7 +575,7 @@ const curdContentConfig = {
   importTemplate: () => {{ class_name }}API.downloadTemplate{{ class_name }}(),
   exportsAction: async (params: any) => {
     const query: any = { ...params };
-    query.status = '0';
+    query.status = "0";
     query.page_no = 1;
     query.page_size = 9999;
     const all: any[] = [];
@@ -599,7 +629,6 @@ const queryFormData = reactive<{{ class_name }}PageQuery>({
   {% endfor %}
 });
 
-
 // 编辑表单
 const formData = reactive<{{ class_name }}Form>({
   {% for column in columns %}
@@ -623,9 +652,7 @@ const rules = reactive({
   {% for column in columns %}
   {% if column.is_insert == 1 or column.is_edit == 1 %}
   {% set required = 'true' if column.is_nullable == 1 else 'false' %}
-  {{ column.column_name }}: [
-    { required: {{ required }}, message: '请输入{{ column.column_comment or column.column_name }}', trigger: 'blur' },
-  ],
+  {{ column.column_name }}: [{ required: {{ required }}, message: "请输入{{ column.column_comment or column.column_name }}", trigger: "blur" }],
   {% endif %}
   {% endfor %}
 });
@@ -848,11 +875,10 @@ const handleUpload = async (formData: FormData) => {
 onMounted(async () => {
   // 预加载字典数据
   if (dictTypes.length > 0) {
-    await dictStore.getDict(dictTypes)
+    await dictStore.getDict(dictTypes);
   }
   loadingData();
 });
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

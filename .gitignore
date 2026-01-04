@@ -15,6 +15,7 @@ backend/.pytest_cache
 backend/logs
 backend/alembic/versions/*
 backend/*.db
+backend/env/*
 
 frontend/__pycache__
 frontend/.vscode

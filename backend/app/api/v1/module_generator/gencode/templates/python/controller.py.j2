@@ -93,7 +93,6 @@ async def export_{{ business_name }}_list_controller(
     result_dict_list = await {{ class_name }}Service.list_{{ business_name }}_service(search=search, auth=auth)
     export_result = await {{ class_name }}Service.batch_export_{{ business_name }}_service(obj_list=result_dict_list)
     log.info('导出{{ function_name }}成功')
-
     return StreamResponse(
         data=bytes2file_response(export_result),
         media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
@@ -110,7 +109,6 @@ async def import_{{ business_name }}_list_controller(
     """导入{{ function_name }}接口"""
     batch_import_result = await {{ class_name }}Service.batch_import_{{ business_name }}_service(file=file, auth=auth, update_support=True)
     log.info("导入{{ function_name }}成功")
-    
     return SuccessResponse(data=batch_import_result, msg="导入{{ function_name }}成功")
 
 @{{ class_name }}Router.post('/download/template', summary="获取{{ function_name }}导入模板", description="获取{{ function_name }}导入模板", dependencies=[Depends(AuthPermission(["{{ permission_prefix }}:download"]))])
@@ -118,7 +116,6 @@ async def export_{{ business_name }}_template_controller() -> StreamingResponse:
     """获取{{ function_name }}导入模板接口"""
     import_template_result = await {{ class_name }}Service.import_template_download_{{ business_name }}_service()
     log.info('获取{{ function_name }}导入模板成功')
-
     return StreamResponse(
         data=bytes2file_response(import_template_result),
         media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',

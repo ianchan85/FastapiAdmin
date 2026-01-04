@@ -698,24 +698,6 @@ class GenTableService:
         output_files = [Jinja2TemplateUtil.get_file_name(template, gen_table) for template in template_list]
         return [template_list, output_files, context, gen_table]
 
-    @classmethod
-    def __get_gen_path(cls, gen_table: GenTableOutSchema, template: str) -> str | None:
-        """根据GenTableOutSchema对象和模板名称生成路径。
-        
-        参数:
-        - gen_table (GenTableOutSchema): 业务表详细信息模型。
-        - template (str): 模板名称。
-        
-        返回:
-        - str | None: 生成的文件路径，若失败则返回None。
-        """
-        try:
-            file_name = Jinja2TemplateUtil.get_file_name(template, gen_table)
-            full_path = BASE_DIR.parent.joinpath(file_name)
-            return str(full_path)
-        except Exception as e:
-            raise CustomException(msg=f"生成路径时出错: {str(e)}")
-
 
 class GenTableColumnService:
     """代码生成业务表字段服务层"""

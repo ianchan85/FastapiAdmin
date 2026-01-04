@@ -135,9 +135,17 @@ class GenUtils:
         # 因为现在我们确保传入的arr是GenConstant中定义的列表常量
         # 并且target_value在调用前已经被处理过不会是None
         
-        # 简单直接地执行包含检查
+        # 对于包含括号的类型（如TINYINT(1)），需要特殊处理
+        # 先获取基本类型名称（不含括号）用于比较
         target_str = str(target_value).lower()
-        return any(str(item).lower() == target_str for item in arr)
+        target_base_type = target_str.split('(')[0] if '(' in target_str else target_str
+        
+        for item in arr:
+            item_str = str(item).lower()
+            item_base_type = item_str.split('(')[0] if '(' in item_str else item_str
+            if target_base_type == item_base_type:
+                return True
+        return False
 
     @classmethod
     def convert_class_name(cls, table_name: str) -> str:
@@ -180,6 +188,9 @@ class GenUtils:
         返回:
         - str: 数据库类型。
         """
+        # 特殊处理tinyint(1)，保留括号和长度信息以便识别为布尔类型
+        if column_type.lower().startswith('tinyint(1)'):
+            return column_type
         if '(' in column_type:
             return column_type.split('(')[0]
         return column_type

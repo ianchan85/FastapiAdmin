@@ -5,7 +5,9 @@ from typing import List
 {% endif %}
 from pydantic import BaseModel, ConfigDict, Field
 from fastapi import Query
-
+{% for import_stmt in schema_import_list %}
+{{ import_stmt }}
+{% endfor %}
 {% if table.created_time %}
 from app.core.validator import DateTimeStr
 {% endif %}

@@ -21,7 +21,8 @@ class {{ class_name }}Model(ModelMixin, UserMixin):
 
     {% for column in columns %}
     {% if column.column_name not in ['id', 'uuid', 'status', 'description', 'created_time', 'updated_time', 'created_id', 'updated_id'] %}
-    {{ column.column_name }}: Mapped[{{ column.python_type }} | None] = mapped_column({{ column.column_type|get_sqlalchemy_type }}, {% if column.pk %}primary_key=True, {% endif %}{% if column.increment %}autoincrement=True, {% endif %}{% if column.required or column.pk %}nullable=False{% else %}nullable=True{% endif %}, comment='{{ column.column_comment }}')
+    {% set sqlalchemy_type = column|get_sqlalchemy_type %}
+    {{ column.column_name }}: Mapped[{{ column.python_type }} | None] = mapped_column({{ sqlalchemy_type }}, {% if column.pk %}primary_key=True, {% endif %}{% if column.increment %}autoincrement=True, {% endif %}{% if column.required or column.pk %}nullable=False{% else %}nullable=True{% endif %}, comment='{{ column.column_comment }}')
     {% endif %}
     {% endfor %}
 

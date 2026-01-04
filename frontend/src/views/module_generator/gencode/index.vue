@@ -278,7 +278,7 @@
           v-model:value="createContent"
           :options="sqlOptions"
           border
-          :height="'300px'"
+          :height="'400px'"
           width="100%"
         />
       </el-scrollbar>

@@ -109,7 +109,7 @@ export interface {{ class_name }}PageQuery extends PageQuery {
 }
 
 // 列表展示项
-export interface {{ class_name }}Table extends BaseType{
+export interface {{ class_name }}Table extends BaseType {
   {% for column in columns %}
   {% if column.column_name not in ['id', 'uuid', 'status', 'description', 'created_time', 'updated_time'] %}
   {{ column.column_name }}?: {{
@@ -124,7 +124,7 @@ export interface {{ class_name }}Table extends BaseType{
 }
 
 // 新增/修改/详情表单参数
-export interface {{ class_name }}Form extends BaseFormType{
+export interface {{ class_name }}Form extends BaseFormType {
   {% for column in columns %}
   {% if (column.is_insert == 1 or column.is_edit == 1) and column.column_name not in ['id', 'uuid', 'status', 'description', 'created_time', 'updated_time', 'created_id', 'updated_id'] %}
   {{ column.column_name }}?: {{

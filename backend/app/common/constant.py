@@ -541,8 +541,9 @@ class GenConstant:
         "oidvector": "ARRAY",
         "pg_node_tree": "Text",
     } if settings.DATABASE_TYPE == "postgres" else {
+        # 布尔类型
+        "TINYINT": "Boolean",
         # 数值类型
-        "TINYINT": "SmallInteger",
         "SMALLINT": "SmallInteger",
         "MEDIUMINT": "Integer",
         "INT": "Integer",
@@ -649,8 +650,9 @@ class GenConstant:
         "oidvector": "list",
         "pg_node_tree": "str",
     } if settings.DATABASE_TYPE == "postgres" else {
+        # 布尔类型（特殊处理tinyint(1)）
+        "TINYINT": "bool",
         # 数值类型
-        "TINYINT": "int",
         "SMALLINT": "int",
         "MEDIUMINT": "int",
         "INT": "int",
