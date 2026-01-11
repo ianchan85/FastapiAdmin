@@ -34,10 +34,10 @@
         <div class="user-profile">
           <div class="user-profile__avatar-wrapper">
             <template v-if="userStore.basicInfo.avatar">
-              <el-avatar size="default" :src="userStore.basicInfo.avatar" />
+              <el-avatar :size="30" :src="userStore.basicInfo.avatar" />
             </template>
             <template v-else>
-              <el-avatar size="default" icon="UserFilled" />
+              <el-avatar :size="30" icon="UserFilled" />
             </template>
             <span class="user-profile__online-indicator"></span>
           </div>

@@ -11,6 +11,9 @@ from app.core.base_params import PaginationQueryParam
 from app.core.dependencies import AuthPermission
 from app.core.logger import log
 
+
+JobRouter = APIRouter(route_class=OperationLogRoute, prefix="/job", tags=["定时任务"])
+
 from app.api.v1.module_system.auth.schema import AuthSchema
 from .tools.ap_scheduler import SchedulerUtil
 from .service import JobService, JobLogService
@@ -20,9 +23,6 @@ from .schema import (
     JobQueryParam,
     JobLogQueryParam
 )
-
-
-JobRouter = APIRouter(route_class=OperationLogRoute, prefix="/job", tags=["定时任务"])
 
 @JobRouter.get("/detail/{id}", summary="获取定时任务详情", description="获取定时任务详情")
 async def get_obj_detail_controller(

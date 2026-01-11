@@ -17,7 +17,6 @@ from math import ceil
 
 from app.config.setting import settings
 from app.core.logger import log
-from app.core.discover import router
 from app.core.exceptions import CustomException, handle_exception
 from app.utils.common_util import import_module, import_modules_async
 from app.scripts.initialize import InitializeData
@@ -36,7 +35,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:
     """
     from app.api.v1.module_system.params.service import ParamsService
     from app.api.v1.module_system.dict.service import DictDataService
-    from app.api.v1.module_application.job.tools.ap_scheduler import SchedulerUtil
+    from app.plugin.module_application.job.tools.ap_scheduler import SchedulerUtil
 
     try:
         await InitializeData().init_db()
@@ -121,11 +120,21 @@ def register_routers(app: FastAPI) -> None:
     返回:
     - None
     """
-    from app.api.v1.module_application.ai.ws import WS_AI
+    from app.api.v1.module_common import common_router
+    from app.api.v1.module_system import system_router
+    from app.api.v1.module_monitor import monitor_router
+    
+    app.include_router(common_router, dependencies=[Depends(RateLimiter(times=5, seconds=10))])
+    app.include_router(system_router, dependencies=[Depends(RateLimiter(times=5, seconds=10))])
+    app.include_router(monitor_router, dependencies=[Depends(RateLimiter(times=5, seconds=10))])
+    
+    from app.plugin.module_application.ai.ws import WS_AI
     # 手动注册WebSocket路由，不使用速率限制器
     app.include_router(router=WS_AI, dependencies=[Depends(WebSocketRateLimiter(times=1, seconds=5))])
     # 先将动态路由注册到应用，使用速率限制器
-    app.include_router(router=router, dependencies=[Depends(RateLimiter(times=5, seconds=10))])
+    from app.core.discover import get_dynamic_router
+    # 获取动态路由实例
+    app.include_router(router=get_dynamic_router(), dependencies=[Depends(RateLimiter(times=5, seconds=10))])
 
 def register_files(app: FastAPI) -> None:
     """

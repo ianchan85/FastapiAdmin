@@ -5,7 +5,7 @@ import re
 from app.common.constant import GenConstant
 from app.utils.string_util import StringUtil
 
-from app.api.v1.module_generator.gencode.schema import GenTableOutSchema, GenTableSchema, GenTableColumnSchema
+from app.plugin.module_generator.gencode.schema import GenTableOutSchema, GenTableSchema, GenTableColumnSchema
 
 
 class GenUtils:

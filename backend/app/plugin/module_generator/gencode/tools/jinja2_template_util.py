@@ -11,7 +11,7 @@ from app.config.setting import settings
 from app.utils.common_util import CamelCaseUtil, SnakeCaseUtil
 from app.utils.string_util import StringUtil
 
-from app.api.v1.module_generator.gencode.schema import GenTableOutSchema, GenTableColumnOutSchema
+from app.plugin.module_generator.gencode.schema import GenTableOutSchema, GenTableColumnOutSchema
 
 
 class Jinja2TemplateUtil:
@@ -166,12 +166,12 @@ class Jinja2TemplateUtil:
 
         # 映射表方式简化
         template_mapping = {
-            'controller.py.j2': f'{cls.BACKEND_PROJECT_PATH}/app/api/v1/{module_name}/{business_name}/controller.py',
-            'service.py.j2': f'{cls.BACKEND_PROJECT_PATH}/app/api/v1/{module_name}/{business_name}/service.py',
-            'crud.py.j2': f'{cls.BACKEND_PROJECT_PATH}/app/api/v1/{module_name}/{business_name}/crud.py',
-            'schema.py.j2': f'{cls.BACKEND_PROJECT_PATH}/app/api/v1/{module_name}/{business_name}/schema.py',
-            'model.py.j2': f'{cls.BACKEND_PROJECT_PATH}/app/api/v1/{module_name}/{business_name}/model.py',
-            '__init__.py.j2': f'{cls.BACKEND_PROJECT_PATH}/app/api/v1/{module_name}/{business_name}/__init__.py',
+            'controller.py.j2': f'{cls.BACKEND_PROJECT_PATH}/app/plugin/{module_name}/{business_name}/controller.py',
+            'service.py.j2': f'{cls.BACKEND_PROJECT_PATH}/app/plugin/{module_name}/{business_name}/service.py',
+            'crud.py.j2': f'{cls.BACKEND_PROJECT_PATH}/app/plugin/{module_name}/{business_name}/crud.py',
+            'schema.py.j2': f'{cls.BACKEND_PROJECT_PATH}/app/plugin/{module_name}/{business_name}/schema.py',
+            'model.py.j2': f'{cls.BACKEND_PROJECT_PATH}/app/plugin/{module_name}/{business_name}/model.py',
+            '__init__.py.j2': f'{cls.BACKEND_PROJECT_PATH}/app/plugin/{module_name}/{business_name}/__init__.py',
             'api.ts.j2': f'{cls.FRONTEND_PROJECT_PATH}/src/api/{module_name}/{business_name}.ts',
             'index.vue.j2': f'{cls.FRONTEND_PROJECT_PATH}/src/views/{module_name}/{business_name}/index.vue'
         }

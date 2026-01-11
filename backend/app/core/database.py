@@ -10,6 +10,7 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, Asyn
 from app.core.logger import log
 from app.config.setting import settings
 from app.core.exceptions import CustomException
+from app.core.base_model import MappedBase
 
 
 def create_engine_and_session(
@@ -94,6 +95,16 @@ def create_async_engine_and_session(
 engine, db_session = create_engine_and_session(settings.DB_URI)
 async_engine, async_db_session = create_async_engine_and_session(settings.ASYNC_DB_URI)
 
+async def create_tables() -> None:
+    """创建数据库表"""
+    async with async_engine.begin() as coon:
+        await coon.run_sync(MappedBase.metadata.create_all)
+
+async def drop_tables() -> None:
+    """删除数据库表"""
+    async with async_engine.begin() as conn:
+        await conn.run_sync(MappedBase.metadata.drop_all)
+
 async def redis_connect(app: FastAPI, status: str) -> Redis | None:
     """
     创建或关闭Redis连接。
@@ -120,7 +131,6 @@ async def redis_connect(app: FastAPI, status: str) -> Redis | None:
             )
             app.state.redis = rd
             if await rd.ping():
-                log.info("✅️ Redis连接成功...")
                 return rd
         except exceptions.AuthenticationError as e:
             log.error(f"❌ 数据库 Redis 认证失败: {e}")

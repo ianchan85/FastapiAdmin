@@ -291,7 +291,6 @@ class ParamsService:
                             key=redis_key,
                             value=value,
                         )
-                        log.info(f"✅ 系统配置缓存成功: {config.config_key}")
                         if not result:
                             log.error(f"❌️ 初始化系统配置失败: {config_obj_dict}")
                             raise CustomException(msg="初始化系统配置失败")

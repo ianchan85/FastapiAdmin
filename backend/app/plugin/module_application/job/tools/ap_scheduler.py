@@ -26,7 +26,7 @@ from app.core.logger import log
 from app.core.redis_crud import RedisCURD
 from app.utils.cron_util import CronUtil
 
-from app.api.v1.module_application.job.model import JobModel
+from app.plugin.module_application.job.model import JobModel
 
 job_stores = {
     'default': MemoryJobStore(),
@@ -80,7 +80,7 @@ class SchedulerUtil:
             return
             
         # 延迟导入避免循环导入
-        from app.api.v1.module_application.job.model import JobLogModel
+        from app.plugin.module_application.job.model import JobLogModel
         
         # 获取事件类型和任务ID
         event_type = event.__class__.__name__
@@ -130,7 +130,7 @@ class SchedulerUtil:
         - None
         """
         # 延迟导入避免循环导入
-        from app.api.v1.module_application.job.crud import JobCRUD
+        from app.plugin.module_application.job.crud import JobCRUD
         from app.api.v1.module_system.auth.schema import AuthSchema
         log.info('🔎 开始启动定时任务...')
         # 保存Redis连接到类变量
@@ -161,7 +161,6 @@ class SchedulerUtil:
                             if item.status == "1":
                                 # 如果任务状态为暂停，则立即暂停刚添加的任务
                                 cls.pause_job(job_id=item.id)
-                        log.info('✅️ 系统初始定时任务加载成功')
                     finally:
                         # 释放锁
                         await redis_client.unlock(lock_key, lock_value)

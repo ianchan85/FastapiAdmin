@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from sqlalchemy.engine.result import Result
 from sqlalchemy.engine.reflection import Inspector
 from sqlalchemy import Inspector, select, text, inspect
-from typing import Any, Sequence
+from typing import Sequence
 
 from app.core.logger import log
 from app.config.setting import settings

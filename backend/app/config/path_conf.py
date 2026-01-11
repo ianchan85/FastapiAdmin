@@ -25,7 +25,7 @@ ENV_DIR = BASE_DIR / 'env'
 SCRIPT_DIR: Path = BASE_DIR / 'app' / 'scripts' / 'data'
 
 # 模版文件配置
-TEMPLATE_DIR: Path = BASE_DIR / 'app' / 'api' / 'v1' / 'module_generator' / 'gencode' / 'templates'
+TEMPLATE_DIR: Path = BASE_DIR / 'app' / 'plugin' / 'module_generator' / 'gencode' / 'templates'
 
 # banner.txt 文件路径
 BANNER_FILE = BASE_DIR / 'banner.txt'

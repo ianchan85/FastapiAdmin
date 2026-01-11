@@ -505,22 +505,22 @@
             <el-col :span="24">
               <el-descriptions :column="2" border>
                 <el-descriptions-item :label="info.function_name + '功能，后端控制层'">
-                  backend/app/api/v1/{{ info.module_name }}/{{ info.business_name }}/controller.py
+                  backend/app/plugin/{{ info.module_name }}/{{ info.business_name }}/controller.py
                 </el-descriptions-item>
                 <el-descriptions-item :label="info.function_name + '功能，后端业务层'">
-                  backend/app/api/v1/{{ info.module_name }}/{{ info.business_name }}/service.py
+                  backend/app/plugin/{{ info.module_name }}/{{ info.business_name }}/service.py
                 </el-descriptions-item>
                 <el-descriptions-item :label="info.function_name + '功能，后端数据层'">
-                  backend/app/api/v1/{{ info.module_name }}/{{ info.business_name }}/crud.py
+                  backend/app/plugin/{{ info.module_name }}/{{ info.business_name }}/crud.py
                 </el-descriptions-item>
                 <el-descriptions-item :label="info.function_name + '功能，后端实体层'">
-                  backend/app/api/v1/{{ info.module_name }}/{{ info.business_name }}/model.py
+                  backend/app/plugin/{{ info.module_name }}/{{ info.business_name }}/model.py
                 </el-descriptions-item>
                 <el-descriptions-item :label="info.function_name + '功能，后端序列化层'">
-                  backend/app/api/v1/{{ info.module_name }}/{{ info.business_name }}/schema.py
+                  backend/app/plugin/{{ info.module_name }}/{{ info.business_name }}/schema.py
                 </el-descriptions-item>
                 <el-descriptions-item :label="info.function_name + '功能，后端初始化'">
-                  backend/app/api/v1/{{ info.module_name }}/{{ info.business_name }}/__init__.py
+                  backend/app/plugin/{{ info.module_name }}/{{ info.business_name }}/__init__.py
                 </el-descriptions-item>
                 <el-descriptions-item :label="info.function_name + '功能，前端接口层'">
                   frontend/src/api/{{ info.module_name }}/{{ info.business_name }}.ts

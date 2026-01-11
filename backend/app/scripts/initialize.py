@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.v1.module_system.position.model import PositionModel
 from app.config.path_conf import SCRIPT_DIR
 from app.core.logger import log
-from app.core.database import async_db_session, async_engine
+from app.core.database import async_db_session, create_tables, drop_tables
 from app.core.base_model import MappedBase
 
 from app.api.v1.module_system.user.model import UserModel, UserRolesModel
@@ -47,9 +47,8 @@ class InitializeData:
         """
         try:
             # 使用引擎创建所有表
-            async with async_engine.begin() as conn:
-                await conn.run_sync(MappedBase.metadata.create_all)
-            log.info("✅️ 数据库表结构初始化完成")
+            # await drop_tables()
+            await create_tables()
         except asyncio.exceptions.TimeoutError:
             log.error("❌️ 数据库表结构初始化超时")
             raise

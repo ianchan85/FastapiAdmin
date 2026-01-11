@@ -298,9 +298,6 @@ class DictDataService:
                         log.warning("未找到任何字典类型数据")
                         return
                     
-                    success_count = 0
-                    fail_count = 0
-                    
                     for obj in obj_list:
                         dict_type = obj.dict_type
                         try:
@@ -313,15 +310,8 @@ class DictDataService:
                                     key=redis_key,
                                     value=value,
                             )
-                            success_count += 1
-                            log.info(f"✅ 字典数据缓存成功: {dict_type}")
-                            
                         except Exception as e:
-                            fail_count += 1
                             log.error(f"❌ 初始化字典数据失败 [{dict_type}]: {e}")
-                            # 继续处理其他字典类型，不中断整个初始化过程
-                    
-                    log.info(f"字典数据初始化完成 - 成功: {success_count}, 失败: {fail_count}")
                     
         except Exception as e:
             log.error(f"字典初始化过程发生错误: {e}")
