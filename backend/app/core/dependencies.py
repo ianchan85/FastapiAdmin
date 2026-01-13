@@ -99,7 +99,7 @@ async def get_current_user(
     )
     if not user:
         raise CustomException(msg="用户不存在", code=10401, status_code=401)
-    if not user.status:
+    if user.status == "1":
         raise CustomException(msg="用户已被停用", code=10401, status_code=401)
     
     # 设置请求上下文
@@ -163,7 +163,7 @@ class AuthPermission:
             menu.permission 
             for role in auth.user.roles
             for menu in role.menus 
-            if role.status and menu.permission and menu.status
+            if role.status == "0" and menu.permission and menu.status == "0"
         }
 
         # 权限验证 - 满足任一权限即可

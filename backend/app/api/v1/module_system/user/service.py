@@ -169,7 +169,7 @@ class UserService:
             dept = await DeptCRUD(auth).get_by_id_crud(id=data.dept_id)
             if not dept:
                 raise CustomException(msg='部门不存在')
-            if not dept.status:
+            if dept.status == "1":
                 raise CustomException(msg='部门已被禁用')
         
         # 更新用户 - 排除不应被修改的字段, 更新不更新密码
@@ -218,7 +218,7 @@ class UserService:
                 raise CustomException(msg="用户不存在")
             if user.is_superuser:
                 raise CustomException(msg="超级管理员不能删除")
-            if user.status:
+            if user.status == "0":
                 raise CustomException(msg="用户已启用,不能删除")
             if auth.user and auth.user.id == id:
                 raise CustomException(msg="不能删除当前登陆用户")
@@ -263,7 +263,7 @@ class UserService:
                 menu.id 
                 for role in auth.user.roles or [] 
                 for menu in role.menus 
-                if menu.status and menu.type in [1, 2, 4]
+                if menu.status == "0" and menu.type in [1, 2, 4]
             }
             
             # 使用树形结构查询，预加载children关系
@@ -451,7 +451,7 @@ class UserService:
         user = await UserCRUD(auth).get_by_username_crud(username=data.username)
         if not user:
             raise CustomException(msg="用户不存在")
-        if not user.status:
+        if user.status == "1":
             raise CustomException(msg="用户已停用")
         
         # 检查是否是超级管理员
@@ -526,7 +526,7 @@ class UserService:
                     count = count + 1
                     # 数据转换
                     gender = 1 if row['gender'] == '男' else (2 if row['gender'] == '女' else 1)
-                    status = True if row['status'] == '正常' else False
+                    status = "0" if row['status'] == '正常' else "1"
                     
                     # 构建用户数据
                     user_data = {

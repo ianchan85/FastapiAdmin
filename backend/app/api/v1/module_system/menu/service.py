@@ -169,7 +169,7 @@ class MenuService:
         menu_list = await MenuCRUD(auth).get_list_crud()
         total_ids = []
         
-        if data.status:
+        if data.status == "0":
             # 激活，则需要把所有父级菜单都激活
             id_map = get_parent_id_map(model_list=menu_list)
             for menu_id in data.ids:

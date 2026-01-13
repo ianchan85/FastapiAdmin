@@ -256,7 +256,7 @@ class DemoService:
                 try:
                     # 数据转换前的类型检查
                     try:
-                        status = True if row['status'] == '正常' else False
+                        status = "0" if row['status'] == '正常' else "1"
                     except ValueError:
                         error_msgs.append(f"第{count}行: 状态必须是'正常'或'停用'")
                         continue

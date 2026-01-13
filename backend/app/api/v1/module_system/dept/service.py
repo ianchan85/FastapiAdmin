@@ -167,7 +167,7 @@ class DeptService:
         dept_list = await DeptCRUD(auth).get_list_crud()
         total_ids = []
         
-        if data.status:
+        if data.status == "0":
             id_map = get_parent_id_map(model_list=dept_list)
             for dept_id in data.ids:
                 enable_ids = get_parent_recursion(id=dept_id, id_map=id_map)

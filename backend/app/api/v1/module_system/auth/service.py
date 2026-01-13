@@ -79,7 +79,7 @@ class LoginService:
         if not PwdUtil.verify_password(plain_password=login_form.password, password_hash=user.password):
             raise CustomException(msg="账号或密码错误")
 
-        if not user.status:
+        if user.status == "1":
             raise CustomException(msg="用户已被停用")
         
         # 更新最后登录时间

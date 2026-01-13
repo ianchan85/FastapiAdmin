@@ -153,8 +153,8 @@
         <el-table-column label="任务组名" prop="job_group" min-width="120" show-overflow-tooltip />
         <el-table-column label="执行状态" prop="status" min-width="100" show-overflow-tooltip>
           <template #default="scope">
-            <el-tag :type="scope.row.status === '0' ? 'primary' : 'success'">
-              {{ scope.row.status === "0" ? "运行中" : "完成" }}
+            <el-tag :type="scope.row.status === '0' ? 'success' : 'danger'">
+              {{ scope.row.status === "0" ? "成功" : "失败" }}
             </el-tag>
           </template>
         </el-table-column>
@@ -243,8 +243,8 @@
             {{ detailFormData.job_group }}
           </el-descriptions-item>
           <el-descriptions-item label="执行状态" :span="2">
-            <el-tag :type="detailFormData.status === '0' ? 'primary' : 'success'">
-              {{ detailFormData.status === "0" ? "运行中" : "完成" }}
+            <el-tag :type="detailFormData.status === '0' ? 'success' : 'danger'">
+              {{ detailFormData.status === "0" ? "成功" : "失败" }}
             </el-tag>
           </el-descriptions-item>
           <el-descriptions-item label="执行信息" :span="2">

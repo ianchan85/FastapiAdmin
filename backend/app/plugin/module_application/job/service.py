@@ -160,7 +160,7 @@ class JobService:
             updated_job = await JobCRUD(auth).get_obj_by_id_crud(id=id)
             if updated_job:
                 # 重新添加任务
-                SchedulerUtil.add_job(job_info=updated_job)
+                SchedulerUtil().add_job(job_info=updated_job)
                 # 设置状态为运行中
                 await JobCRUD(auth).set_obj_field_crud(ids=[id], status='0')
 

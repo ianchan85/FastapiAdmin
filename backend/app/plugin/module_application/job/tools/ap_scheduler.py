@@ -67,7 +67,7 @@ class SchedulerUtil:
     @classmethod
     def scheduler_event_listener(cls, event: JobEvent | JobExecutionEvent) -> None:
         """
-        监听任务执行事件。
+        监听任务执行事件并记录详细执行信息。
     
         参数:
         - event (JobEvent | JobExecutionEvent): 任务事件对象。
@@ -75,51 +75,126 @@ class SchedulerUtil:
         返回:
         - None
         """
-        # 只处理任务执行相关事件，不处理任务添加、删除等事件
-        if not isinstance(event, JobExecutionEvent):
-            return
+        try:
+            # 只处理任务执行相关事件，不处理任务添加、删除等事件
+            if not isinstance(event, JobExecutionEvent):
+                return
+                
+            # 延迟导入避免循环导入
+            from app.plugin.module_application.job.model import JobLogModel
             
-        # 延迟导入避免循环导入
-        from app.plugin.module_application.job.model import JobLogModel
-        
-        # 获取事件类型和任务ID
-        event_type = event.__class__.__name__
-        # 初始化任务状态
-        status = "0"
-        exception_info = ''
-        if isinstance(event, JobExecutionEvent) and event.exception:
-            exception_info = str(event.exception)
-            status = "1"
-        if hasattr(event, 'job_id'):
-            job_id = event.job_id
-            query_job = cls.get_job(job_id=job_id)
-            if query_job:
-                job_message = (f"事件类型: {event_type}, 任务ID: {job_id}, "
-                               f"状态: {status}, 错误详情: {exception_info}, "
-                               f"执行于{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-
-                job_log = JobLogModel(
-                    job_name=query_job.name,
-                    job_group=query_job._jobstore_alias,
-                    job_executor=query_job.executor,
-                    invoke_target=query_job.func.__module__ + '.' + query_job.func.__qualname__,
-                    job_args=str(query_job.args),
-                    job_kwargs=str(query_job.kwargs),
-                    job_trigger=query_job.trigger,
-                    job_message=job_message,
-                    status=status,
-                    exception_info=exception_info,
-                    created_time=datetime.now(),
-                    updated_time=datetime.now(),
-                    job_id=job_id,
-                )
-
-                with db_session.begin() as session:
+            # 获取事件类型和任务ID
+            event_type = event.__class__.__name__
+            
+            # 初始化任务状态
+            status = "0"
+            exception_info = ''
+            if hasattr(event, 'exception') and event.exception:
+                exception_info = str(event.exception)
+                status = "1"
+            
+            if hasattr(event, 'job_id'):
+                job_id = event.job_id
+                query_job = cls.get_job(job_id=job_id)
+                
+                if query_job:
+                    # 解析任务的实际执行函数和参数
+                    actual_func = None
+                    actual_args = []
+                    actual_kwargs = {}
+                    
                     try:
-                        session.add(job_log)
-                        session.commit()
+                        if hasattr(query_job, 'args') and len(query_job.args) >= 2:
+                            actual_func = query_job.args[0]
+                            actual_args = query_job.args[2:]
+                            
+                        if hasattr(query_job, 'kwargs'):
+                            actual_kwargs = query_job.kwargs
                     except Exception as e:
-                        session.rollback()
+                        log.error(f"解析任务 {job_id} 参数失败: {str(e)}")
+                    
+                    # 格式化参数显示
+                    formatted_args = str(actual_args) if actual_args else "()"
+                    formatted_kwargs = str(actual_kwargs) if actual_kwargs else "{}"
+                    
+                    # 获取实际的执行函数信息
+                    actual_func_module = ''
+                    actual_func_name = ''
+                    try:
+                        if actual_func:
+                            actual_func_module = getattr(actual_func, '__module__', '')
+                            actual_func_name = getattr(actual_func, '__name__', '')
+                    except Exception as e:
+                        log.error(f"获取任务 {job_id} 函数信息失败: {str(e)}")
+                    
+                    # 构建详细的任务消息
+                    scheduled_time_str = "未知"
+                    try:
+                        if hasattr(event, 'scheduled_run_time') and event.scheduled_run_time:
+                            scheduled_time_str = event.scheduled_run_time.strftime('%Y-%m-%d %H:%M:%S')
+                    except Exception:
+                        try:
+                            scheduled_time_str = str(event.scheduled_run_time)
+                        except Exception:
+                            pass
+                    
+                    try:
+                        event_type = event_type
+                        func_info = f"{actual_func_module}.{actual_func_name}" if actual_func else "未知"
+                        job_message = f"任务 {job_id} ({query_job.name}) 执行完成: "
+                        job_message += f"状态={'成功' if status == '0' else '失败'}, "
+                        job_message += f"执行函数={func_info}, "
+                        job_message += f"参数={formatted_args}, "
+                        job_message += f"关键字参数={formatted_kwargs}, "
+                        job_message += f"计划时间={scheduled_time_str}, "
+                        job_message += f"实际执行时间={datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+                        if exception_info:
+                            job_message += f", 错误={exception_info[:500]}..."
+                    except Exception as e:
+                        job_message = f"任务 {job_id} 执行事件，状态={'成功' if status == '0' else '失败'}"
+                        log.error(f"构建任务 {job_id} 消息失败: {str(e)}")
+
+                    # 创建日志记录
+                    try:
+                        # 获取执行函数信息
+                        invoke_target = func_info
+                        if not invoke_target:
+                            try:
+                                invoke_target = f"{getattr(query_job.func, '__module__', '')}.{getattr(query_job.func, '__name__', '')}"
+                            except Exception:
+                                invoke_target = "未知"
+                        
+                        job_log = JobLogModel(
+                            job_name=query_job.name,
+                            job_group=query_job._jobstore_alias,
+                            job_executor=query_job.executor,
+                            invoke_target=invoke_target,
+                            job_args=formatted_args,
+                            job_kwargs=formatted_kwargs,
+                            job_trigger=str(query_job.trigger),
+                            job_message=job_message,
+                            status=status,
+                            exception_info=exception_info,
+                            created_time=datetime.now(),
+                            updated_time=datetime.now(),
+                            job_id=job_id,
+                        )
+
+                        # 保存到数据库
+                        with db_session.begin() as session:
+                            try:
+                                session.add(job_log)
+                                session.commit()
+                                log.info(f"任务 {job_id} 执行日志已保存")
+                            except Exception as e:
+                                session.rollback()
+                                log.error(f"保存任务 {job_id} 执行日志失败: {str(e)}")
+                    except Exception as e:
+                        log.error(f"创建任务 {job_id} 日志记录失败: {str(e)}")
+        except Exception as e:
+            log.error(f"处理任务执行事件失败: {str(e)}")
+            import traceback
+            traceback.print_exc()
 
     @classmethod
     async def init_system_scheduler(cls, redis: Redis) -> None:
@@ -299,7 +374,7 @@ class SchedulerUtil:
         # 动态导入模块
         # 1. 解析调用目标
         module_path, func_name = str(job_info.func).rsplit('.', 1)
-        module_path = "app.api.v1.module_application.job.function_task." + module_path
+        module_path = "app.plugin.module_application.job.function_task." + module_path
         try:
             module = importlib.import_module(module_path)
             job_func = getattr(module, func_name)
@@ -356,9 +431,10 @@ class SchedulerUtil:
                 if not CronUtil.validate_cron_expression(job_info.trigger_args):
                     raise ValueError(f'定时任务{job_info.name}, Cron表达式不正确')
 
-                parsed_fields = [None if field in ('*', '?') else field for field in fields]
+                # 将Cron表达式中的"?"替换为"*"以兼容APScheduler
+                parsed_fields = [field if field != '?' else '*' for field in fields]
                 if len(fields) == 6:
-                    parsed_fields.append(None)
+                    parsed_fields.append('*')  # 如果没有年份字段，添加None
 
                 second, minute, hour, day, month, day_of_week, year = tuple(parsed_fields)
                 trigger = CronTrigger(
