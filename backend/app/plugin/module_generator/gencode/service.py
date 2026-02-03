@@ -584,7 +584,7 @@ class GenTableService:
                 await anyio.Path(gen_path).write_text(render_content, encoding="utf-8")
 
                 module_init_path = BASE_DIR.parent.joinpath(
-                    f"backend/app/api/v1/{gen_table_schema.module_name}/__init__.py"
+                    f"backend/app/plugin/{gen_table_schema.module_name}/__init__.py"
                 )
                 if not module_init_path.exists():
                     # 创建module_name目录的__init__.py文件

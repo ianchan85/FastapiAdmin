@@ -152,9 +152,24 @@ class GenUtils:
         # 因为现在我们确保传入的arr是GenConstant中定义的列表常量
         # 并且target_value在调用前已经被处理过不会是None
 
+        # 移除 COLLATE 子句和 UNSIGNED 标记（不区分大小写）
+        target_str = str(target_value)
+        
+        # 移除 COLLATE 子句
+        collate_pattern = re.compile(r'\s+COLLATE\s+', re.IGNORECASE)
+        if collate_pattern.search(target_str):
+            target_str = collate_pattern.split(target_str)[0].strip()
+        
+        # 移除 UNSIGNED 标记
+        unsigned_pattern = re.compile(r'\s+UNSIGNED', re.IGNORECASE)
+        if unsigned_pattern.search(target_str):
+            target_str = unsigned_pattern.sub('', target_str).strip()
+        
+        # 转换为小写进行比较
+        target_str = target_str.lower()
+
         # 对于包含括号的类型（如TINYINT(1)），需要特殊处理
         # 先获取基本类型名称（不含括号）用于比较
-        target_str = str(target_value).lower()
         target_base_type = target_str.split("(")[0] if "(" in target_str else target_str
 
         for item in arr:
@@ -205,9 +220,25 @@ class GenUtils:
         返回:
         - str: 数据库类型。
         """
-        # 特殊处理tinyint(1)，保留括号和长度信息以便识别为布尔类型
+        # 移除 COLLATE 子句（处理带引号和不带引号的情况，不区分大小写）
+        collate_pattern = re.compile(r'\s+COLLATE\s+', re.IGNORECASE)
+        if collate_pattern.search(column_type):
+            column_type = collate_pattern.split(column_type)[0].strip()
+        
+        # 移除 UNSIGNED 标记（不区分大小写）
+        unsigned_pattern = re.compile(r'\s+UNSIGNED', re.IGNORECASE)
+        if unsigned_pattern.search(column_type):
+            column_type = unsigned_pattern.sub('', column_type).strip()
+        
+        # 特殊处理tinyint(1)，映射为boolean
         if column_type.lower().startswith("tinyint(1)"):
-            return column_type
+            return "boolean"
+        
+        # 处理PostgreSQL数组类型（如 integer[], text[]）
+        if "[]" in column_type:
+            return "array"
+        
+        # 提取基本类型
         if "(" in column_type:
             return column_type.split("(")[0]
         return column_type

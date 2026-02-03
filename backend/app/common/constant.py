@@ -514,6 +514,7 @@ class GenConstant:
             "real": "Float",
             "double precision": "Float",
             "numeric": "Numeric",
+            "decimal": "Numeric",
             "character varying": "String",
             "varchar": "String",
             "character": "String",
@@ -619,33 +620,97 @@ class GenConstant:
     # 数据库类型与python类型映射
     DB_TO_PYTHON = (
         {
-            "boolean": "bool",
+            # MySQL 整数类型
+            "tinyint": "int",
             "smallint": "int",
+            "mediumint": "int",
+            "int": "int",
             "integer": "int",
-            "int4": "int",
             "bigint": "int",
-            "real": "float",
-            "double precision": "float",
+            
+            # MySQL 浮点类型
+            "float": "float",
+            "double": "float",
+            "decimal": "Decimal",
             "numeric": "Decimal",
-            "character varying": "str",
+            
+            # MySQL 字符串类型
+            "char": "str",
             "varchar": "str",
-            "character": "str",
+            "tinytext": "str",
             "text": "str",
-            "bytea": "bytes",
+            "mediumtext": "str",
+            "longtext": "str",
+            
+            # MySQL 二进制类型
+            "binary": "bytes",
+            "varbinary": "bytes",
+            "tinyblob": "bytes",
+            "blob": "bytes",
+            "mediumblob": "bytes",
+            "longblob": "bytes",
+            
+            # MySQL 日期时间类型
             "date": "date",
             "time": "time",
-            "time with time zone": "time",
-            "time without time zone": "time",
+            "datetime": "datetime",
             "timestamp": "datetime",
+            "year": "int",
+            
+            # MySQL 其他类型
+            "json": "dict",
+            "enum": "str",
+            "set": "str",
+            "bit": "int",
+            
+            # MySQL 空间数据类型
+            "geometry": "bytes",
+            "linestring": "bytes",
+            "multipoint": "bytes",
+            "multilinestring": "bytes",
+            "multipolygon": "bytes",
+            "geometrycollection": "bytes",
+            
+            # PostgreSQL 整数类型
+            "int2": "int",
+            "int4": "int",
+            "int8": "int",
+            
+            # PostgreSQL 浮点类型
+            "real": "float",
+            "double precision": "float",
+            "float8": "float",
+            
+            # PostgreSQL 字符串类型
+            "character": "str",
+            "character varying": "str",
+            
+            # PostgreSQL 二进制类型
+            "bytea": "bytes",
+            
+            # PostgreSQL 日期时间类型
+            "time with time zone": "time",
+            "timetz": "time",
+            "time without time zone": "time",
+            "timestamptz": "datetime",
             "timestamp with time zone": "datetime",
             "timestamp without time zone": "datetime",
             "interval": "timedelta",
-            "json": "dict",
+            
+            # PostgreSQL 布尔类型
+            "boolean": "bool",
+            "bool": "bool",
+            
+            # PostgreSQL JSON类型
             "jsonb": "dict",
+            
+            # PostgreSQL 其他类型
             "uuid": "str",
             "inet": "str",
             "cidr": "str",
             "macaddr": "str",
+            
+            # PostgreSQL 几何类型（覆盖MySQL的映射）
             "point": "list",
             "line": "list",
             "lseg": "list",
@@ -653,82 +718,48 @@ class GenConstant:
             "path": "list",
             "polygon": "list",
             "circle": "list",
-            "bit": "int",
+            
+            # PostgreSQL 位类型
             "bit varying": "int",
+            "varbit": "int",
+            
+            # PostgreSQL 文本搜索类型
             "tsvector": "str",
             "tsquery": "str",
+            
+            # PostgreSQL XML类型
             "xml": "str",
+            
+            # PostgreSQL 数组类型
             "array": "list",
-            "composite": "dict",
-            "enum": "str",
+            
+            # PostgreSQL 范围类型
             "range": "list",
+            "int4range": "list",
+            "int8range": "list",
+            "tsrange": "list",
+            "tstzrange": "list",
+            "daterange": "list",
+            
+            # PostgreSQL 货币类型
             "money": "Decimal",
-            "pg_lsn": "int",
-            "txid_snapshot": "str",
+            
+            # PostgreSQL 对象标识符类型
             "oid": "int",
             "regproc": "str",
             "regclass": "str",
             "regtype": "str",
             "regrole": "str",
             "regnamespace": "str",
+            
+            # PostgreSQL 向量类型
             "int2vector": "list",
             "oidvector": "list",
+            
+            # PostgreSQL 其他内部类型
+            "pg_lsn": "int",
+            "txid_snapshot": "str",
             "pg_node_tree": "str",
-        }
-        if settings.DATABASE_TYPE == "postgres"
-        else {
-            # 布尔类型（特殊处理tinyint(1)）
-            "TINYINT": "bool",
-            # 数值类型
-            "SMALLINT": "int",
-            "MEDIUMINT": "int",
-            "INT": "int",
-            "INTEGER": "int",
-            "BIGINT": "int",
-            "FLOAT": "float",
-            "DOUBLE": "float",
-            "NUMERIC": "float",
-            "DECIMAL": "Decimal",
-            "BIT": "int",
-            # 日期和时间类型
-            "DATE": "datetime.date",
-            "TIME": "datetime.time",
-            "DATETIME": "datetime.datetime",
-            "TIMESTAMP": "datetime.datetime",
-            "YEAR": "int",
-            "TINYINT UNSIGNED": "int",  # 无符号小整数类型
-            # 布尔类型
-            "BOOLEAN": "bool",
-            "BOOL": "bool",  # 布尔类型，通常与 BOOLEAN 相同
-            # UUID
-            "UUID": "str",  # UUID 一般作为字符串
-            # 字符串类型
-            "CHAR": "str",
-            "VARCHAR": "str",
-            "TINYTEXT": "str",
-            "TEXT": "str",
-            "MEDIUMTEXT": "str",
-            "LONGTEXT": "str",
-            "BINARY": "bytes",
-            "VARBINARY": "bytes",
-            "TINYBLOB": "bytes",
-            "BLOB": "bytes",
-            "MEDIUMBLOB": "bytes",
-            "LONGBLOB": "bytes",
-            # 枚举和集合类型
-            "ENUM": "str",
-            "SET": "list",
-            # JSON 类型
-            "JSON": "dict",
-            # 空间数据类型（通常需要特殊处理）
-            "GEOMETRY": "bytes",  # 空间数据类型，通常存储为字节流
-            "POINT": "bytes",  # 点数据类型
-            "LINESTRING": "bytes",  # 线数据类型
-            "POLYGON": "bytes",  # 多边形数据类型
-            "MULTIPOINT": "bytes",  # 多点数据类型
-            "MULTILINESTRING": "bytes",  # 多线数据类型
-            "MULTIPOLYGON": "bytes",  # 多多边形数据类型
-            "GEOMETRYCOLLECTION": "bytes",  # 几何集合类型
         }
     )
 

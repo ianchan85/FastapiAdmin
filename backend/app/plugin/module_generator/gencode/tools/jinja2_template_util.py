@@ -1,3 +1,4 @@
+import re
 from datetime import datetime
 from typing import Any
 
@@ -207,32 +208,58 @@ class Jinja2TemplateUtil:
         """
         columns = gen_table.columns or []
         import_list = set()
-        has_datetime_type = False
+        has_datetime_import = False
+        has_date_import = False
+        has_time_import = False
+        has_datetime_str = False
+        has_date_str = False
+        has_time_str = False
 
         for column in columns:
-            # 处理嵌套的datetime类型，如datetime.date、datetime.time、datetime.datetime
-            if (
-                column.python_type.startswith("datetime.")
-                or column.python_type in GenConstant.TYPE_DATE
-            ):
-                has_datetime_type = True
+            # 处理datetime类型的导入
+            if column.python_type and column.python_type in GenConstant.TYPE_DATE:
+                if column.python_type == "datetime":
+                    has_datetime_import = True
+                elif column.python_type == "date":
+                    has_date_import = True
+                elif column.python_type == "time":
+                    has_time_import = True
             elif column.python_type == GenConstant.TYPE_DECIMAL:
                 import_list.add("from decimal import Decimal")
+            
+            # 检查是否需要DateTimeStr、DateStr、TimeStr
+            if column.column_name == "created_time" or column.column_name == "updated_time":
+                has_datetime_str = True
 
         if gen_table.sub and gen_table.sub_table and gen_table.sub_table.columns:
             sub_columns = gen_table.sub_table.columns or []
             for sub_column in sub_columns:
-                # 处理嵌套的datetime类型，如datetime.date、datetime.time、datetime.datetime
-                if (
-                    sub_column.python_type.startswith("datetime.")
-                    or sub_column.python_type in GenConstant.TYPE_DATE
-                ):
-                    has_datetime_type = True
+                # 处理datetime类型的导入
+                if sub_column.python_type and sub_column.python_type in GenConstant.TYPE_DATE:
+                    if sub_column.python_type == "datetime":
+                        has_datetime_import = True
+                    elif sub_column.python_type == "date":
+                        has_date_import = True
+                    elif sub_column.python_type == "time":
+                        has_time_import = True
                 elif sub_column.python_type == GenConstant.TYPE_DECIMAL:
                     import_list.add("from decimal import Decimal")
 
-        if has_datetime_type:
-            import_list.add("import datetime")
+        # 添加datetime导入
+        if has_datetime_import:
+            import_list.add("from datetime import datetime")
+        if has_date_import:
+            import_list.add("from datetime import date")
+        if has_time_import:
+            import_list.add("from datetime import time")
+        
+        # 添加validator导入
+        if has_datetime_str:
+            import_list.add("from app.core.validator import DateTimeStr")
+        if has_date_str:
+            import_list.add("from app.core.validator import DateStr")
+        if has_time_str:
+            import_list.add("from app.core.validator import TimeStr")
 
         return import_list
 
@@ -246,6 +273,9 @@ class Jinja2TemplateUtil:
         """
         columns = gen_table.columns or []
         import_list = set()
+        has_datetime_import = False
+        has_date_import = False
+        has_time_import = False
 
         for column in columns:
             if column.column_type:
@@ -256,10 +286,16 @@ class Jinja2TemplateUtil:
                     f"from sqlalchemy import {StringUtil.get_mapping_value_by_key_ignore_case(GenConstant.DB_TO_SQLALCHEMY, data_type)}"
                 )
             # 处理datetime类型的导入
-            if column.python_type and "." in column.python_type:
-                datetime_type = column.python_type.split(".")[0]
-                if datetime_type == "datetime":
-                    import_list.add("import datetime")
+            if column.python_type and column.python_type in GenConstant.TYPE_DATE:
+                if column.python_type == "datetime":
+                    has_datetime_import = True
+                elif column.python_type == "date":
+                    has_date_import = True
+                elif column.python_type == "time":
+                    has_time_import = True
+            # 处理Decimal类型的导入
+            elif column.python_type == GenConstant.TYPE_DECIMAL:
+                import_list.add("from decimal import Decimal")
         if gen_table.sub:
             import_list.add("from sqlalchemy import ForeignKey")
             if gen_table.sub_table and gen_table.sub_table.columns:
@@ -271,10 +307,25 @@ class Jinja2TemplateUtil:
                             f"from sqlalchemy import {StringUtil.get_mapping_value_by_key_ignore_case(GenConstant.DB_TO_SQLALCHEMY, data_type)}"
                         )
                     # 处理datetime类型的导入
-                    if sub_column.python_type and "." in sub_column.python_type:
-                        datetime_type = sub_column.python_type.split(".")[0]
-                        if datetime_type == "datetime":
-                            import_list.add("import datetime")
+                    if sub_column.python_type and sub_column.python_type in GenConstant.TYPE_DATE:
+                        if sub_column.python_type == "datetime":
+                            has_datetime_import = True
+                        elif sub_column.python_type == "date":
+                            has_date_import = True
+                        elif sub_column.python_type == "time":
+                            has_time_import = True
+                    # 处理Decimal类型的导入
+                    elif sub_column.python_type == GenConstant.TYPE_DECIMAL:
+                        import_list.add("from decimal import Decimal")
+        
+        # 添加datetime导入
+        if has_datetime_import:
+            import_list.add("from datetime import datetime")
+        if has_date_import:
+            import_list.add("from datetime import date")
+        if has_time_import:
+            import_list.add("from datetime import time")
+        
         return cls.merge_same_imports(list(import_list), "from sqlalchemy import")
 
     @classmethod
@@ -288,6 +339,21 @@ class Jinja2TemplateUtil:
         返回:
         - str: 数据库类型（去除长度等修饰）。
         """
+        # 移除 COLLATE 子句（处理带引号和不带引号的情况，不区分大小写）
+        collate_pattern = re.compile(r'\s+COLLATE\s+', re.IGNORECASE)
+        if collate_pattern.search(column_type):
+            column_type = collate_pattern.split(column_type)[0].strip()
+        
+        # 移除 UNSIGNED 标记（不区分大小写）
+        unsigned_pattern = re.compile(r'\s+UNSIGNED', re.IGNORECASE)
+        if unsigned_pattern.search(column_type):
+            column_type = unsigned_pattern.sub('', column_type).strip()
+        
+        # 处理PostgreSQL数组类型（如 integer[], text[]）
+        if "[]" in column_type:
+            return "array"
+        
+        # 提取基本类型
         if "(" in column_type:
             return column_type.split("(")[0]
         return column_type
@@ -425,6 +491,9 @@ class Jinja2TemplateUtil:
             )
             # 如果是字符串类型且包含括号参数，保持原参数
             if sqlalchemy_type in ["String", "CHAR"]:
+                sqlalchemy_type += "(" + column_type_list[1]
+            # 如果是Numeric类型且包含括号参数，保持原参数
+            elif sqlalchemy_type == "Numeric":
                 sqlalchemy_type += "(" + column_type_list[1]
         elif sqlalchemy_type is None:
             # 处理没有括号的类型
