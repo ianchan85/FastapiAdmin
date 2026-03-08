@@ -37,13 +37,12 @@ services:
     restart: always
     environment:
       TZ: "Asia/Shanghai"
-      REDIS_PASSWORD: "FastApi123abc"
     ports:
       - "6379:6379"
     volumes:
       # 挂载Redis配置文件，实现自定义配置
       - ./devops/redis/data:/data
-    command: redis-server --requirepass ${REDIS_PASSWORD}
+    command: redis-server --requirepass FastApi123abc
     networks:
       - app_network
     
