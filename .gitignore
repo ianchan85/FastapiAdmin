@@ -36,3 +36,4 @@ devops/nginx/fastapp/dist
 devops/nginx/fastdocs/dist
 devops/nginx/frontend/dist
 devops/nginx/ssl
+docker-compose.yaml
