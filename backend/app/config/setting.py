@@ -120,9 +120,6 @@ class Settings(BaseSettings):
     CAPTCHA_FONT_SIZE: int = 32  # 字体大小
     CAPTCHA_FONT_PATH: str = "static/assets/font/Arial.ttf"  # 字体路径
 
-    # 是否请求外网解析 IP 归属地（登录发 token、操作日志写 login_location 共用；关闭可明显加快登录）
-    LOGIN_RESOLVE_IP_LOCATION: bool = False
-
     # ================================================= #
     # ******************* 外部 HTTP（httpx）******************* #
     # ================================================= #

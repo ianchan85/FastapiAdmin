@@ -46,7 +46,7 @@ class IpLocalUtil:
         """
         登录与操作日志写入 ``login_location`` 时的统一解析入口。
 
-        与 ``settings.LOGIN_RESOLVE_IP_LOCATION`` 联动：关闭时不请求外网，仅返回占位描述，
+        与 ``settings.DEBUG`` 联动：如果 ``DEBUG`` 为 ``False`` 时，关闭解析，不请求外网，仅返回占位描述，
         避免登录 POST 在 ``OperationLogRoute`` 收尾阶段因外网查询变慢。
 
         参数:
@@ -57,7 +57,7 @@ class IpLocalUtil:
         """
         if not ip:
             return None
-        if not settings.LOGIN_RESOLVE_IP_LOCATION:
+        if settings.DEBUG:
             return (
                 "内网IP"
                 if cls.is_private_ip(ip)
