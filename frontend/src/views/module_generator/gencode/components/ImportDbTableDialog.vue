@@ -1,5 +1,12 @@
 <template>
-  <EnhancedDialog v-model="open" title="导入表" width="min(960px, 96vw)" append-to-body>
+  <EnhancedDialog
+    ref="dialogRef"
+    v-model="open"
+    title="导入表"
+    width="min(960px, 96vw)"
+    append-to-body
+    @fullscreen-change="onFullscreenChange"
+  >
     <el-form ref="importQueryRef" :model="query" :inline="true">
       <el-form-item label="表名称" prop="table_name">
         <el-input
@@ -41,7 +48,7 @@
       <el-table
         ref="tableRef"
         :data="data"
-        height="300px"
+        :height="tableHeight"
         border
         @row-click="onRowClick"
         @selection-change="onSelectionChange"
@@ -93,7 +100,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import type { FormInstance, TableInstance } from "element-plus";
 import type { DBTableSchema, GenTablePageQuery } from "@/api/module_generator/gencode";
 import EnhancedDialog from "@/components/CURD/EnhancedDialog.vue";
@@ -119,6 +126,16 @@ const emit = defineEmits<{
 
 const importQueryRef = ref<FormInstance>();
 const tableRef = ref<TableInstance>();
+const isFullscreen = ref(false);
+
+// 根据全屏状态计算表格高度
+const tableHeight = computed(() => {
+  return isFullscreen.value ? "calc(100vh - 320px)" : "300px";
+});
+
+function onFullscreenChange(fullscreen: boolean) {
+  isFullscreen.value = fullscreen;
+}
 
 function onRowClick(row: DBTableSchema) {
   tableRef.value?.toggleRowSelection(row);

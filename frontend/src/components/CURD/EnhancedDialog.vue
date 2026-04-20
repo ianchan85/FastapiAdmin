@@ -43,7 +43,7 @@
 <script setup lang="ts">
 import { Close, Fold, FullScreen } from "@element-plus/icons-vue";
 import type { DialogProps } from "element-plus";
-import { computed, ref, useAttrs } from "vue";
+import { computed, ref, useAttrs, watch } from "vue";
 
 defineOptions({ inheritAttrs: false });
 
@@ -68,10 +68,16 @@ const emit = defineEmits<{
   "update:modelValue": [v: boolean];
   close: [];
   opened: [];
+  "fullscreen-change": [isFullscreen: boolean];
 }>();
 
 const attrs = useAttrs();
 const fullscreen = ref(false);
+
+// 监听全屏状态变化并发出事件
+watch(fullscreen, (newVal) => {
+  emit("fullscreen-change", newVal);
+});
 
 const dialogClass = computed(() => {
   const a = attrs.class;

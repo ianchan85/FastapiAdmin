@@ -81,7 +81,7 @@
         v-loading="loading"
         :data="displayColumns"
         row-key="id"
-        max-height="580"
+        :height="tableHeight"
         highlight-current-row
         border
         stripe
@@ -265,6 +265,12 @@ const columnKeyword = ref("");
 const dragTable = ref<any>(null);
 const dragContainer = ref<HTMLElement | null>(null);
 let draggableApi: { destroy?: () => void; pause?: () => void; start?: () => void } | null = null;
+
+// 计算表格高度：视口高度 - 顶部导航栏 - 步骤条 - 提示文字 - 筛选栏 - 底部按钮 - 边距
+// 大约：60(顶部) + 60(步骤) + 30(提示) + 50(筛选) + 80(底部按钮) + 100(边距) = 380px
+const tableHeight = computed(() => {
+  return "calc(100vh - 300px)"; // -80 底部按钮
+});
 
 const columnsModel = computed({
   get: () => props.info.columns || [],
