@@ -966,9 +966,9 @@ function deleteEdge(edgeId: string, getEdges: () => Edge[], setEdges: (edges: Ed
 
 .canvas-container {
   flex: 1;
-  min-height: 400px;
   width: 100%;
   height: 100%;
+  min-height: 400px;
   overflow: hidden;
 }
 

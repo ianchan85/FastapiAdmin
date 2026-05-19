@@ -1,5 +1,5 @@
 <template>
-  <div class="fa-card p-5 pt-3.5 h-46">
+  <div class="fa-card h-53 p-5 pt-3.5">
     <div class="fa-card-header">
       <div class="title">
         <h4 class="text-2xl">

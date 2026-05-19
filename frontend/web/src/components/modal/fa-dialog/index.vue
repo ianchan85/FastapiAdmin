@@ -25,11 +25,7 @@
             />
           </ElTooltip>
           <ElTooltip content="关闭" placement="top">
-            <FaIconButton
-              class="core-overlay-icon-btn"
-              icon="ri:close-line"
-              @click="close"
-            />
+            <FaIconButton class="core-overlay-icon-btn" icon="ri:close-line" @click="close" />
           </ElTooltip>
         </div>
       </div>
@@ -141,8 +137,8 @@ const dialogAttrs = computed(() => {
     transition: all 0.2s ease;
 
     &:hover {
+      box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
   }
 }

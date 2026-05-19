@@ -509,8 +509,8 @@ onUnmounted(() => {
 }
 
 .chart-container {
-  flex: 1;
   display: flex;
+  flex: 1;
   align-items: center;
   justify-content: center;
   min-height: 300px;

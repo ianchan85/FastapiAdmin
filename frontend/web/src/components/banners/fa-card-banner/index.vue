@@ -1,6 +1,6 @@
 <!-- 卡片横幅组件 -->
 <template>
-  <div class="fa-card-sm flex-c flex-col pb-6" :style="{ height: height }">
+  <div class="fa-card p-5 flex-c flex-col pb-6 h-full" :style="{ height: height }">
     <div class="flex-c flex-col gap-4 text-center">
       <div class="w-45">
         <img :src="image" :alt="title" class="w-full h-full object-contain" loading="eager" />
@@ -76,7 +76,7 @@ interface CardBannerProps {
 
 // 定义组件属性默认值
 withDefaults(defineProps<CardBannerProps>(), {
-  height: "24rem",
+  height: "100%",
   image: defaultIcon,
   title: "",
   description: "",

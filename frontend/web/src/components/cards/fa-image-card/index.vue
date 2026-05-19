@@ -1,7 +1,7 @@
 <!-- 图片卡片 -->
 <template>
-  <div class="w-full c-p" @click="handleClick">
-    <div class="fa-card overflow-hidden">
+  <div class="w-full c-p h-full" @click="handleClick">
+    <div class="fa-card overflow-hidden h-full">
       <div class="relative w-full aspect-16/10 overflow-hidden">
         <ElImage
           :src="props.imageUrl"

@@ -1,5 +1,5 @@
 <template>
-  <div class="fa-card h-128 p-5">
+  <div class="fa-card p-5 h-[28.2rem] overflow-hidden">
     <div class="fa-card-header">
       <div class="title">
         <h4>代办事项</h4>
@@ -18,7 +18,11 @@
           :key="index"
         >
           <div>
-            <p class="text-sm">{{ item.username }}</p>
+            <p class="text-sm">
+              <span class="text-g-800 font-medium">{{ item.username }}</span>
+              <span class="mx-2 text-g-600">{{ item.type }}</span>
+              <span class="text-theme">{{ item.target }}</span>
+            </p>
             <p class="text-g-500 mt-1">{{ item.date }}</p>
           </div>
           <ElCheckbox v-model="item.complate" />
@@ -33,6 +37,8 @@ interface TodoItem {
   username: string;
   date: string;
   complate: boolean;
+  type: string;
+  target: string;
 }
 
 /**
@@ -41,34 +47,46 @@ interface TodoItem {
  */
 const list = reactive<TodoItem[]>([
   {
-    username: "查看今天工作内容",
+    username: "张无忌",
     date: "上午 09:30",
     complate: true,
+    type: "查看",
+    target: "查看今天工作内容",
   },
   {
-    username: "回复邮件",
+    username: "赵敏",
     date: "上午 10:30",
     complate: true,
+    type: "回复",
+    target: "回复邮件",
   },
   {
-    username: "工作汇报整理",
+    username: "小昭",
     date: "上午 11:00",
     complate: true,
+    type: "工作",
+    target: "工作汇报整理",
   },
   {
-    username: "产品需求会议",
+    username: "金毛狮王",
     date: "下午 02:00",
     complate: false,
+    type: "会议",
+    target: "产品需求会议",
   },
   {
-    username: "整理会议内容",
+    username: "金花婆婆",
     date: "下午 03:30",
     complate: false,
+    type: "会议",
+    target: "整理会议内容",
   },
   {
-    username: "明天工作计划",
+    username: "张三丰",
     date: "下午 06:30",
     complate: false,
+    type: "计划",
+    target: "明天工作计划",
   },
 ]);
 </script>

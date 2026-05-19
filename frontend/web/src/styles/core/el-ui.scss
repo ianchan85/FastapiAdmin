@@ -120,11 +120,11 @@ html.dark .el-card {
   .el-dialog__title {
     font-size: 16px;
   }
-}    
+}
 
 .el-dialog__body {
   position: relative; // 为了兼容 el-pagination 样式，需要设置 relative，不然会影响 el-pagination 的样式，比如 el-pagination__jump--small 会被影响，导致 el-pagination__jump--small 按钮无法点击，详见 URL_ADDRESS.com/element-plus/element-plus/issues/5684#issuecomment-1176299275;
-  padding: 12px 0px !important;
+  padding: 12px 0 !important;
 }
 
 .el-dialog.el-dialog-border {
@@ -154,11 +154,11 @@ html.dark .el-card {
 .el-drawer__header {
   padding: 12px 8px !important;
   margin-bottom: 2px !important;
-} 
+}
 
 .el-drawer__body {
   position: relative; // 为了兼容 el-pagination 样式，需要设置 relative，不然会影响 el-pagination 的样式，比如 el-pagination__jump--small 会被影响，导致 el-pagination__jump--small 按钮无法点击，详见 URL_ADDRESS.com/element-plus/element-plus/issues/5684#issuecomment-1176299275;
-  padding: 0px 8px !important;
+  padding: 0 8px !important;
 }
 
 // el-message 样式优化

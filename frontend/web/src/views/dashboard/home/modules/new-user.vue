@@ -1,5 +1,5 @@
 <template>
-  <div class="fa-card p-5 h-128 overflow-hidden">
+  <div class="fa-card p-5 overflow-hidden flex flex-col h-full">
     <div class="fa-card-header">
       <div class="title">
         <h4>新用户</h4>

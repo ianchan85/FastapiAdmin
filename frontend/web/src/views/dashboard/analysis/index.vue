@@ -1,25 +1,34 @@
 <template>
   <div>
-    <!-- 业务分析模块 -->
     <ElRow :gutter="20">
       <ElCol :xl="14" :lg="15" :xs="24"><TodaySales /></ElCol>
       <ElCol :xl="10" :lg="9" :xs="24"><VisitorInsights /></ElCol>
     </ElRow>
 
     <ElRow :gutter="20">
-      <ElCol :xl="10" :lg="10" :xs="24"><TotalRevenue /></ElCol>
-      <ElCol :xl="7" :lg="7" :xs="24"><CustomerSatisfaction /></ElCol>
-      <ElCol :xl="7" :lg="7" :xs="24"><TargetVsReality /></ElCol>
+      <!-- 左侧2个组件 -->
+      <ElCol :xl="6" :lg="6" :xs="24" class="flex flex-col gap-5">
+        <CustomerSatisfaction class="flex-1" />
+        <TotalRevenue class="flex-1" />
+      </ElCol>
+
+      <!-- 中间地图 -->
+      <ElCol :xl="12" :lg="12" :xs="24">
+        <div class="fa-card" style="min-height: 500px">
+          <FaMapChart />
+        </div>
+      </ElCol>
+
+      <!-- 右侧2个组件 -->
+      <ElCol :xl="6" :lg="6" :xs="24" class="flex flex-col gap-5">
+        <TargetVsReality class="flex-1" />
+        <TopProducts class="flex-1" />
+      </ElCol>
     </ElRow>
 
     <ElRow :gutter="20">
-      <ElCol :xl="10" :lg="10" :xs="24"><TopProducts /></ElCol>
-      <ElCol :xl="7" :lg="7" :xs="24"><SalesMappingByCountry /></ElCol>
-      <ElCol :xl="7" :lg="7" :xs="24"><VolumeServiceLevel /></ElCol>
-    </ElRow>
-
-    <!-- 图表演示区 -->
-    <ElRow :gutter="20">
+      <ElCol :xl="8" :lg="8" :xs="24"><SalesMappingByCountry /></ElCol>
+      <ElCol :xl="8" :lg="8" :xs="24"><VolumeServiceLevel /></ElCol>
       <ElCol :xs="24" :md="12" :lg="8" class="mb-5">
         <div class="fa-card">
           <div class="pb-3.5"><span class="text-base font-medium">柱状图（单数据）</span></div>
@@ -247,11 +256,6 @@
         </div>
       </ElCol>
     </ElRow>
-
-    <!-- 地图 -->
-    <div class="page-content" element-loading-text="加载中...">
-      <FaMapChart />
-    </div>
   </div>
 </template>
 
@@ -268,7 +272,7 @@ import TopProducts from "./modules/top-products.vue";
 import SalesMappingByCountry from "./modules/sales-mapping-by-country.vue";
 import VolumeServiceLevel from "./modules/volume-service-level.vue";
 
-defineOptions({ name: "Analysis" });
+defineOptions({ name: "DashboardAnalysis" });
 
 const FaMapChart = defineAsyncComponent(() => import("@/components/charts/fa-map-chart/index.vue"));
 

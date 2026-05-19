@@ -1,6 +1,6 @@
 <template>
   <FaLineChartCard
-    class=""
+    class="fa-card h-53 p-5 pt-3.5"
     :value="2545"
     label="购物车转化率"
     :percentage="1.2"

@@ -1,5 +1,5 @@
 <template>
-  <div class="fa-card p-5 h-105">
+  <div class="fa-card p-5 h-112">
     <div class="fa-card-header">
       <div class="title">
         <h4>销售分类</h4>

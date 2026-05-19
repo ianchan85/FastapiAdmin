@@ -106,9 +106,9 @@
 // 表格按钮悬浮效果
 .hover-btn {
   &:hover {
-    transform: translateY(-2px) scale(1.05);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
     filter: brightness(1.1);
+    transform: translateY(-2px) scale(1.05);
   }
 }
 
