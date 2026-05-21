@@ -2,6 +2,35 @@
 
 基于 **Vue 3 + Vite + TypeScript + Element Plus** 的后台管理前端，与 FastAPI Admin 后端配套使用。状态管理为 **Pinia**，样式以 **Tailwind CSS 4** 与 **SCSS** 为主，接口请求使用 **Axios**。
 
+> **与仓库根文档的关系**：项目总览、一键前后端启动、演示账号、Docker 部署等请以 [根目录 README.md](../../README.md) 为准；**本文档**侧重 `frontend/web/` 目录结构、环境变量与前端开发约定。
+
+## 快速开始
+
+### 环境准备
+
+| 工具    | 版本要求                                               |
+| ------- | ------------------------------------------------------ |
+| Node.js | ≥ 20.19（见 `package.json` → `engines`）               |
+| pnpm    | ≥ 8.8，推荐 **pnpm 9**（与 `packageManager` 字段一致） |
+
+未安装 pnpm 时可执行：`corepack enable && corepack prepare pnpm@9.15.3 --activate`（版本可按项目 `packageManager` 调整）。
+
+### 安装依赖并启动
+
+```bash
+cd frontend/web
+pnpm install
+pnpm dev
+```
+
+默认开发端口由 **`.env`** 中的 **`VITE_PORT`** 决定（当前模板为 **5173**）。
+
+### 与后端联调
+
+1. 先启动 **FastAPI Admin 后端**，监听地址与 **`.env.development`** 里 **`VITE_API_BASE_URL`** 一致（模板默认为 **`http://127.0.0.1:8001`**）。
+2. 前端开发时，浏览器请求发往当前页面同源路径，由 **Vite `server.proxy`** 把 **`VITE_APP_BASE_API`**（如 `/api/v1`）转发到上述后端。
+3. 若页面提示「连接被拒绝」，检查后端是否启动、端口是否一致，或把 **`VITE_API_BASE_URL`** 改成你的实际后端地址。
+
 ## 架构概览
 
 ```
@@ -20,72 +49,6 @@ main.ts 启动
 
 路由采用 **Hash 模式**，静态路由（Layout/登录/404）首屏注册，业务路由由守卫根据菜单权限延迟 `addRoute`。HTTP 拦截器支持 **Token 静默续期**（401 时自动 refresh，失败后跳转登录）。
 
----
-
-## 第一次运行（最快上手）
-
-### 1. 环境准备
-
-| 工具    | 版本要求                                               |
-| ------- | ------------------------------------------------------ |
-| Node.js | ≥ 20.19（见 `package.json` → `engines`）               |
-| pnpm    | ≥ 8.8，推荐 **pnpm 9**（与 `packageManager` 字段一致） |
-
-未安装 pnpm 时可执行：`corepack enable && corepack prepare pnpm@9.15.3 --activate`（版本可按项目 `packageManager` 调整）。
-
-### 2. 安装依赖并启动
-
-在 **仓库根目录** 下进入本工程（路径以你的克隆位置为准）：
-
-```bash
-cd frontend/web
-pnpm install
-pnpm dev
-```
-
-终端会打印本地访问地址；默认开发端口由 **`.env`** 中的 **`VITE_PORT`** 决定（当前模板为 **5180**）。浏览器打开提示的 `http://localhost:端口/` 即可。
-
-### 3. 环境变量（必看）
-
-本项目使用 **Vite 环境文件**：
-
-- **`.env`**：各环境共享（端口、`VITE_APP_BASE_API`、权限模式等）。
-- **`.env.development`**：开发模式覆盖项（后端地址、标题等）。
-- 修改任一 env 后需 **重启** `pnpm dev`。
-
-若仓库内没有现成的 `.env`，可复制示例文件再按需改名：
-
-```bash
-cp .env.example .env
-# 若有需要，再单独创建 .env.development（可参考示例下半段注释）
-```
-
-常用变量说明见下文 **[环境变量一览](#环境变量一览)**。
-
-### 4. 与后端联调
-
-1. 先启动 **FastAPI Admin 后端**，监听地址与 **`.env.development`** 里 **`VITE_API_BASE_URL`** 一致（模板默认为 **`http://127.0.0.1:8001`**）。
-2. 前端开发时，浏览器请求发往当前页面同源路径，由 **Vite `server.proxy`** 把 **`VITE_APP_BASE_API`**（如 `/api/v1`）转发到上述后端。
-3. 若页面提示「连接被拒绝」，检查后端是否启动、端口是否一致，或把 **`VITE_API_BASE_URL`** 改成你的实际后端地址。
-
-### 5. 登录与权限
-
-登录页与 Token 逻辑由项目内置 **`utils/http`**、**`utils/auth`** 与路由守卫配合实现。具体账号由 **后端初始化数据或管理员创建**，请参阅后端文档。
-
----
-
-## 常见问题（排查）
-
-| 现象                      | 建议                                                                                    |
-| ------------------------- | --------------------------------------------------------------------------------------- |
-| `ECONNREFUSED` / 网络错误 | 后端未启动或 **`VITE_API_BASE_URL`** 端口错误                                           |
-| 接口 401 / 频繁跳转登录   | Token 失效或未登录；清除站点本地存储后重新登录                                          |
-| 修改 `.env` 不生效        | 必须 **重启** `pnpm dev`                                                                |
-| 依赖异常、热更新怪异      | 尝试 **`pnpm clean:cache`** 后再 **`pnpm dev`**；仍不行可 **`pnpm dev:force`**          |
-| 类型报错                  | 运行 **`pnpm type-check`**；自动生成类型见 `src/types/import/`（勿手改自动生成的 d.ts） |
-
----
-
 ## 技术栈
 
 | 类别   | 选型                                                   |
@@ -96,11 +59,9 @@ cp .env.example .env
 | UI     | Element Plus                                           |
 | 路由   | Vue Router 4（Hash；静态路由 + 守卫内动态 `addRoute`） |
 | 状态   | Pinia + pinia-plugin-persistedstate                    |
-| 样式   | Tailwind CSS、SCSS                                     |
+| 样式   | Tailwind CSS 4、SCSS                                   |
 | HTTP   | Axios                                                  |
 | 国际化 | vue-i18n                                               |
-
----
 
 ## 常用脚本
 
@@ -115,8 +76,6 @@ cp .env.example .env
 | `pnpm lint`                                   | ESLint + Prettier + Stylelint                                 |
 | `pnpm clean:dev`                              | 执行 `scripts/clean-dev.ts`（清理演示等，使用前阅读脚本说明） |
 | `pnpm clean:cache`                            | 清理 Vite 等缓存                                              |
-
----
 
 ## 目录结构（src）
 
@@ -140,11 +99,7 @@ src/
 └── main.ts           # 入口
 ```
 
-应用插件与路由初始化顺序见 **`src/plugins/index.ts`**（**`initPlugins`**）。
-
----
-
-## 路径别名（编写代码时）
+## 路径别名
 
 | 别名               | 指向         |
 | ------------------ | ------------ |
@@ -157,11 +112,9 @@ src/
 
 与 **`vite.config.ts`**、`tsconfig.json` 中 `paths` 保持一致。
 
----
+## 环境变量
 
-## 环境变量一览
-
-只有以 **`VITE_`** 开头的变量会注入前端代码。下列与 **`pnpm dev`** 关系最密切：
+只有以 **`VITE_`** 开头的变量会注入前端代码：
 
 | 变量                   | 作用                                             |
 | ---------------------- | ------------------------------------------------ |
@@ -174,11 +127,9 @@ src/
 | `VITE_APP_WS_ENDPOINT` | WebSocket（如 AI 对话）                          |
 | `VITE_APP_TITLE`       | 页面标题（可被后端参数配置覆盖）                 |
 
-完整列表以仓库内 **`.env`**、**`.env.development`** 为准；模板说明见 **`.env.example`**。
+完整列表以仓库内 **`.env`**、**`.env.development`** 为准；模板说明见 **`.env.example`**。修改任一 env 后需 **重启** `pnpm dev`。
 
----
-
-## 路由与菜单（扩展页面时）
+## 路由与菜单
 
 | 文件                          | 职责                                              |
 | ----------------------------- | ------------------------------------------------- |
@@ -189,23 +140,23 @@ src/
 
 新增业务页：一般需要 **视图 +（可选）静态或动态路由 + 后端菜单/i18n**，三者路径与 **name** 保持一致。
 
----
+## 常见问题
+
+| 现象                      | 建议                                                                                    |
+| ------------------------- | --------------------------------------------------------------------------------------- |
+| `ECONNREFUSED` / 网络错误 | 后端未启动或 **`VITE_API_BASE_URL`** 端口错误                                           |
+| 接口 401 / 频繁跳转登录   | Token 失效或未登录；清除站点本地存储后重新登录                                          |
+| 修改 `.env` 不生效        | 必须 **重启** `pnpm dev`                                                                |
+| 依赖异常、热更新怪异      | 尝试 **`pnpm clean:cache`** 后再 **`pnpm dev`**；仍不行可 **`pnpm dev:force`**          |
+| 类型报错                  | 运行 **`pnpm type-check`**；自动生成类型见 `src/types/import/`（勿手改自动生成的 d.ts） |
 
 ## 构建与部署
 
-- 输出目录：**`dist/`**。
-- 部署在子路径时配置 **`VITE_BASE_URL`**，并配置网关/Nginx 将前端资源与 `/api` 等转发到后端。
-- 生产构建可能移除部分 `console`（见 **`vite.config.ts`** 中 `terserOptions`）。
-
----
+- 输出目录：**`dist/`**
+- 部署在子路径时配置 **`VITE_BASE_URL`**，并配置网关/Nginx 将前端资源与 `/api` 等转发到后端
+- 生产构建可能移除部分 `console`（见 **`vite.config.ts`** 中 `terserOptions`）
 
 ## 代码规范与 Git
 
-- **格式化与校验**：`pnpm lint`。
-- **提交**：husky、lint-staged、commitlint；可使用 **`pnpm commit`**（Commitizen / cz-git）。
-
----
-
-## 仓库与反馈
-
-Issue 与主页见 **`package.json`** 中的 `bugs`、`homepage`、`repository`。
+- **格式化与校验**：`pnpm lint`
+- **提交**：husky、lint-staged、commitlint；可使用 **`pnpm commit`**（Commitizen / cz-git）
