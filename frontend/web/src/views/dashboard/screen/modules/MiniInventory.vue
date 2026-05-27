@@ -40,77 +40,86 @@ onUnmounted(() => clearInterval(timer));
 
 <style scoped>
 .mini-chart-panel {
-  background: linear-gradient(180deg, rgba(0, 30, 80, 0.55) 0%, rgba(6, 11, 36, 0.7) 100%);
-  border: 1px solid var(--border, rgba(0, 180, 255, 0.12));
-  border-radius: 10px;
-  padding: 10px 12px;
+  position: relative;
   display: flex;
   flex-direction: column;
-  position: relative;
+  padding: 10px 12px;
   overflow: hidden;
+  background: linear-gradient(180deg, rgb(0 30 80 / 55%) 0%, rgb(6 11 36 / 70%) 100%);
+  border: 1px solid var(--border, rgb(0 180 255 / 12%));
+  border-radius: 10px;
 }
+
 .mini-chart-panel::after {
-  content: "";
   position: absolute;
   top: 4px;
   left: 4px;
   width: 6px;
   height: 6px;
-  border-top: 1px solid rgba(20, 184, 166, 0.4);
-  border-left: 1px solid rgba(20, 184, 166, 0.4);
+  content: "";
+  border-top: 1px solid rgb(20 184 166 / 40%);
+  border-left: 1px solid rgb(20 184 166 / 40%);
 }
+
 .mc-hd {
+  margin-bottom: 2px;
   font-size: 10px;
   opacity: 0.35;
-  margin-bottom: 2px;
 }
+
 .mc-value {
+  margin-bottom: 8px;
   font-size: 16px;
   font-weight: 700;
   line-height: 1;
-  margin-bottom: 8px;
 }
+
 .mc-unit {
+  margin-left: 2px;
   font-size: 9px;
   font-weight: 400;
   opacity: 0.4;
-  margin-left: 2px;
 }
+
 .progress-wrap {
-  flex: 1;
   display: flex;
+  flex: 1;
   flex-direction: column;
   justify-content: flex-end;
 }
+
 .progress-track {
-  height: 6px;
-  background: rgba(26, 40, 80, 0.4);
-  border-radius: 3px;
-  overflow: hidden;
   position: relative;
+  height: 6px;
+  overflow: hidden;
+  background: rgb(26 40 80 / 40%);
+  border-radius: 3px;
 }
+
 .progress-fill {
+  position: relative;
   height: 100%;
   border-radius: 3px;
   transition: width 0.8s;
-  position: relative;
 }
+
 .progress-fill::after {
-  content: "";
   position: absolute;
-  right: 0;
   top: -2px;
+  right: 0;
   width: 10px;
   height: 10px;
-  border-radius: 50%;
+  content: "";
   background: #14b8a6;
+  border-radius: 50%;
   box-shadow: 0 0 8px #14b8a6;
 }
+
 .progress-markers {
   display: flex;
   justify-content: space-between;
+  margin-top: 3px;
   font-size: 8px;
   opacity: 0.25;
-  margin-top: 3px;
 }
 </style>

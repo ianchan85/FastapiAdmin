@@ -69,42 +69,47 @@ onUnmounted(() => {
 
 <style scoped>
 .mini-chart-panel {
-  background: linear-gradient(180deg, rgba(0, 30, 80, 0.55) 0%, rgba(6, 11, 36, 0.7) 100%);
-  border: 1px solid var(--border, rgba(0, 180, 255, 0.12));
-  border-radius: 10px;
-  padding: 10px 12px;
+  position: relative;
   display: flex;
   flex-direction: column;
-  position: relative;
+  padding: 10px 12px;
   overflow: hidden;
+  background: linear-gradient(180deg, rgb(0 30 80 / 55%) 0%, rgb(6 11 36 / 70%) 100%);
+  border: 1px solid var(--border, rgb(0 180 255 / 12%));
+  border-radius: 10px;
 }
+
 .mini-chart-panel::after {
-  content: "";
   position: absolute;
   top: 4px;
   left: 4px;
   width: 6px;
   height: 6px;
-  border-top: 1px solid rgba(245, 158, 11, 0.4);
-  border-left: 1px solid rgba(245, 158, 11, 0.4);
+  content: "";
+  border-top: 1px solid rgb(245 158 11 / 40%);
+  border-left: 1px solid rgb(245 158 11 / 40%);
 }
+
 .mc-hd {
+  margin-bottom: 2px;
   font-size: 10px;
   opacity: 0.35;
-  margin-bottom: 2px;
 }
+
 .mc-value {
+  margin-bottom: 0;
   font-size: 16px;
   font-weight: 700;
   line-height: 1;
-  margin-bottom: 0;
 }
+
 .mc-unit {
+  margin-left: 2px;
   font-size: 9px;
   font-weight: 400;
   opacity: 0.4;
-  margin-left: 2px;
 }
+
 .mc-chart {
   flex: 1;
   min-height: 0;

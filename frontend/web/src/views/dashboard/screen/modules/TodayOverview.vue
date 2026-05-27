@@ -90,51 +90,60 @@ onUnmounted(() => clearInterval(timer));
 <style scoped>
 .overview-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
-  gap: 6px;
   flex: 1;
+  grid-template-rows: 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
 }
+
 .ov-card {
-  background: linear-gradient(135deg, rgba(0, 212, 255, 0.04) 0%, rgba(0, 20, 60, 0.3) 100%);
-  border: 1px solid rgba(0, 180, 255, 0.06);
-  border-radius: 8px;
-  padding: 10px 12px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  padding: 10px 12px;
+  background: linear-gradient(135deg, rgb(0 212 255 / 4%) 0%, rgb(0 20 60 / 30%) 100%);
+  border: 1px solid rgb(0 180 255 / 6%);
+  border-radius: 8px;
 }
+
 .ov-label {
+  margin-bottom: 2px;
   font-size: 10px;
   opacity: 0.35;
-  margin-bottom: 2px;
 }
+
 .ov-value {
   display: flex;
-  align-items: baseline;
   gap: 3px;
+  align-items: baseline;
   margin-bottom: 3px;
 }
+
 .ov-count {
   font-size: 20px;
   font-weight: 700;
   line-height: 1;
 }
+
 .ov-unit {
   font-size: 11px;
   opacity: 0.5;
 }
+
 .ov-change {
   font-size: 10px;
 }
+
 .ov-change.up {
   color: #10b981;
 }
+
 .ov-change.down {
   color: #f59e0b;
 }
+
 .ov-compare {
-  opacity: 0.4;
   margin-left: 3px;
+  opacity: 0.4;
 }
 </style>

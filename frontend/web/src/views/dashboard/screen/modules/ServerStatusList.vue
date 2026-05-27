@@ -36,32 +36,39 @@ const servers = ref([
   gap: 10px;
   overflow: auto;
 }
+
 .server-item {
   padding: 10px;
-  background: rgba(12, 18, 48, 0.6);
+  background: rgb(12 18 48 / 60%);
   border-radius: 8px;
 }
+
 .server-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 6px;
 }
+
 .server-name {
   font-size: 12px;
 }
+
 .server-status-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
 }
+
 .server-status-dot.online {
   background: #10b981;
   box-shadow: 0 0 8px #10b981;
 }
+
 .server-status-dot.offline {
   background: #ef4444;
 }
+
 .server-metrics {
   display: flex;
   gap: 12px;

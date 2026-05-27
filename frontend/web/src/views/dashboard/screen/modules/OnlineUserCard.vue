@@ -25,36 +25,43 @@ const onlineTrend = ref(15.6);
 
 <style scoped>
 .online-users {
-  text-align: center;
   padding: 20px 0;
+  text-align: center;
 }
+
 .online-count {
   font-size: 48px;
   font-weight: 700;
   color: #00d4ff;
 }
+
 .online-label {
   display: block;
+  margin-top: 4px;
   font-size: 12px;
   opacity: 0.5;
-  margin-top: 4px;
 }
+
 .online-trend {
   margin-top: 10px;
 }
+
 .online-trend span:first-child {
   font-size: 16px;
   font-weight: 600;
 }
+
 .online-trend .positive {
   color: #10b981;
 }
+
 .online-trend .negative {
   color: #ef4444;
 }
+
 .trend-label {
+  margin-left: 4px;
   font-size: 12px;
   opacity: 0.5;
-  margin-left: 4px;
 }
 </style>

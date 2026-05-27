@@ -55,45 +55,51 @@ onUnmounted(() => clearInterval(timer));
 <style scoped>
 .traffic-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
-  gap: 8px;
   flex: 1;
+  grid-template-rows: 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
 }
+
 .tr-card {
-  background: linear-gradient(135deg, rgba(0, 212, 255, 0.04) 0%, rgba(0, 20, 60, 0.3) 100%);
-  border: 1px solid rgba(0, 180, 255, 0.06);
-  border-radius: 8px;
-  padding: 10px 12px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  padding: 10px 12px;
+  background: linear-gradient(135deg, rgb(0 212 255 / 4%) 0%, rgb(0 20 60 / 30%) 100%);
+  border: 1px solid rgb(0 180 255 / 6%);
+  border-radius: 8px;
 }
+
 .tr-label {
+  margin-bottom: 2px;
   font-size: 10px;
   opacity: 0.35;
-  margin-bottom: 2px;
 }
+
 .tr-value {
+  display: flex;
+  gap: 2px;
+  align-items: baseline;
+  margin-bottom: 4px;
   font-size: 18px;
   font-weight: 700;
   line-height: 1;
-  margin-bottom: 4px;
-  display: flex;
-  align-items: baseline;
-  gap: 2px;
 }
+
 .tr-unit {
   font-size: 10px;
   font-weight: 400;
   opacity: 0.4;
 }
+
 .tr-bar-wrap {
   height: 2px;
-  background: rgba(26, 40, 80, 0.4);
-  border-radius: 1px;
   overflow: hidden;
+  background: rgb(26 40 80 / 40%);
+  border-radius: 1px;
 }
+
 .tr-bar {
   height: 100%;
   border-radius: 1px;

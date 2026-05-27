@@ -69,75 +69,85 @@ onUnmounted(() => clearInterval(timer));
 <style scoped>
 .rank-list {
   display: flex;
+  flex: 1;
   flex-direction: column;
   gap: 5px;
-  flex: 1;
   overflow: auto;
 }
+
 .rank-row {
   display: flex;
-  align-items: center;
   gap: 8px;
+  align-items: center;
   font-size: 11px;
 }
+
 .rank-idx {
-  width: 18px;
-  height: 18px;
-  border-radius: 4px;
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
+  width: 18px;
+  height: 18px;
   font-size: 10px;
   font-weight: 700;
-  background: rgba(26, 40, 80, 0.6);
-  flex-shrink: 0;
+  background: rgb(26 40 80 / 60%);
+  border-radius: 4px;
 }
+
 .rank-idx.top1 {
-  background: rgba(0, 212, 255, 0.2);
   color: #00d4ff;
+  background: rgb(0 212 255 / 20%);
 }
+
 .rank-idx.top2 {
-  background: rgba(124, 58, 237, 0.2);
   color: #7c3aed;
+  background: rgb(124 58 237 / 20%);
 }
+
 .rank-idx.top3 {
-  background: rgba(16, 185, 129, 0.2);
   color: #10b981;
+  background: rgb(16 185 129 / 20%);
 }
+
 .rank-name {
-  width: 100px;
   flex-shrink: 0;
+  width: 100px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
 .rank-bar-wrap {
   flex: 1;
   height: 5px;
-  background: rgba(26, 40, 80, 0.4);
-  border-radius: 3px;
   overflow: hidden;
+  background: rgb(26 40 80 / 40%);
+  border-radius: 3px;
 }
+
 .rank-bar {
   display: block;
   height: 100%;
   border-radius: 3px;
   transition: width 0.6s;
 }
+
 .rank-val {
   flex-shrink: 0;
-  opacity: 0.7;
-  font-variant-numeric: tabular-nums;
   font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.7;
 }
+
 .rank-badge {
+  padding: 2px 8px;
   margin-left: auto;
   font-size: 10px;
-  opacity: 0.5;
-  background: rgba(245, 158, 11, 0.15);
   color: #f59e0b;
-  padding: 2px 8px;
+  background: rgb(245 158 11 / 15%);
   border-radius: 10px;
+  opacity: 0.5;
   animation: blink 2s infinite;
 }
 @keyframes blink {
@@ -145,6 +155,7 @@ onUnmounted(() => clearInterval(timer));
   100% {
     opacity: 0.5;
   }
+
   50% {
     opacity: 1;
   }

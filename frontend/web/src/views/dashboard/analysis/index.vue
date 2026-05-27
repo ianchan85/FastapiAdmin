@@ -300,8 +300,8 @@ const stackXAxisData = ref(["产品A", "产品B", "产品C", "产品D", "产品E
 .page-title {
   margin: 1.25rem 0;
   font-size: 1.25rem;
-  line-height: 1.75rem;
   font-weight: 500;
+  line-height: 1.75rem;
 }
 
 .page-title:first-child {

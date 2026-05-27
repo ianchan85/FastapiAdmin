@@ -54,37 +54,43 @@ onUnmounted(() => clearInterval(timer));
 <style scoped>
 .metric-list {
   display: flex;
+  flex: 1;
   flex-direction: column;
   gap: 4px;
-  flex: 1;
   justify-content: center;
 }
+
 .metric-row {
   padding: 2px 0;
 }
+
 .mr-label {
+  margin-bottom: 2px;
   font-size: 10px;
   opacity: 0.35;
-  margin-bottom: 2px;
 }
+
 .mr-value {
+  margin-bottom: 3px;
   font-size: 18px;
   font-weight: 700;
   line-height: 1;
-  margin-bottom: 3px;
 }
+
 .mr-unit {
+  margin-left: 2px;
   font-size: 10px;
   font-weight: 400;
   opacity: 0.4;
-  margin-left: 2px;
 }
+
 .mr-bar-wrap {
   height: 2px;
-  background: rgba(26, 40, 80, 0.4);
-  border-radius: 1px;
   overflow: hidden;
+  background: rgb(26 40 80 / 40%);
+  border-radius: 1px;
 }
+
 .mr-bar {
   height: 100%;
   border-radius: 1px;

@@ -54,57 +54,65 @@ onUnmounted(() => clearInterval(timer));
 <style scoped>
 .funnel-list {
   display: flex;
+  flex: 1;
   flex-direction: column;
   gap: 5px;
-  flex: 1;
   justify-content: center;
 }
+
 .fn-item {
   padding: 2px 0;
 }
+
 .fn-row {
   display: flex;
-  align-items: center;
   gap: 6px;
-  font-size: 10px;
+  align-items: center;
   margin-bottom: 3px;
+  font-size: 10px;
 }
+
 .fn-idx {
-  width: 14px;
-  height: 14px;
-  border-radius: 3px;
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
+  width: 14px;
+  height: 14px;
   font-size: 8px;
   font-weight: 700;
   color: #fff;
-  flex-shrink: 0;
+  border-radius: 3px;
 }
+
 .fn-label {
+  flex-shrink: 0;
   width: 28px;
   opacity: 0.5;
-  flex-shrink: 0;
 }
+
 .fn-val {
   flex: 1;
+  font-variant-numeric: tabular-nums;
   text-align: right;
   opacity: 0.8;
-  font-variant-numeric: tabular-nums;
 }
+
 .fn-rate {
-  width: 54px;
-  text-align: right;
-  font-weight: 600;
   flex-shrink: 0;
+  width: 54px;
   font-size: 9px;
+  font-weight: 600;
+  text-align: right;
 }
+
 .fn-bar-wrap {
   height: 3px;
-  background: rgba(26, 40, 80, 0.4);
-  border-radius: 2px;
   overflow: hidden;
+  background: rgb(26 40 80 / 40%);
+  border-radius: 2px;
 }
+
 .fn-bar {
   height: 100%;
   border-radius: 2px;

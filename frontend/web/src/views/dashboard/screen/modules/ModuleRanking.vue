@@ -46,54 +46,63 @@ function rankColor(i: number) {
   gap: 5px;
   overflow: auto;
 }
+
 .rank-row {
   display: flex;
-  align-items: center;
   gap: 6px;
+  align-items: center;
   font-size: 12px;
 }
+
 .rank-no {
-  width: 18px;
-  height: 18px;
-  border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 18px;
+  height: 18px;
   font-size: 10px;
   font-weight: 700;
-  background: rgba(26, 32, 80, 0.6);
+  background: rgb(26 32 80 / 60%);
+  border-radius: 4px;
 }
+
 .rk-1 {
+  color: #fff;
   background: #ef4444 !important;
-  color: #fff;
 }
+
 .rk-2 {
+  color: #fff;
   background: #f59e0b !important;
-  color: #fff;
 }
+
 .rk-3 {
-  background: #3b82f6 !important;
   color: #fff;
+  background: #3b82f6 !important;
 }
+
 .rank-name {
-  width: 60px;
   flex-shrink: 0;
+  width: 60px;
 }
+
 .rank-bar-wrap {
   flex: 1;
   height: 6px;
-  border-radius: 3px;
-  background: rgba(26, 32, 80, 0.6);
   overflow: hidden;
+  background: rgb(26 32 80 / 60%);
+  border-radius: 3px;
 }
+
 .rank-bar {
   height: 100%;
   border-radius: 3px;
   transition: width 0.6s;
 }
+
 .rank-val {
   width: 30px;
-  text-align: right;
   font-variant-numeric: tabular-nums;
+  text-align: right;
 }
 </style>

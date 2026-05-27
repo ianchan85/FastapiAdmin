@@ -132,26 +132,29 @@ onUnmounted(() => {
 <style scoped>
 .gauge-row {
   display: flex;
-  justify-content: space-around;
+  flex: 1;
   align-items: center;
-  flex: 1;
+  justify-content: space-around;
 }
+
 .gauge-item {
-  text-align: center;
-  flex: 1;
   display: flex;
+  flex: 1;
   flex-direction: column;
+  text-align: center;
 }
+
 .gauge-label {
+  display: block;
+  flex-shrink: 0;
+  margin-top: -6px;
   font-size: 12px;
   opacity: 0.5;
-  display: block;
-  margin-top: -6px;
-  flex-shrink: 0;
 }
+
 .chart-box-xs {
-  width: 100%;
   flex: 1;
+  width: 100%;
   min-height: 0;
 }
 </style>

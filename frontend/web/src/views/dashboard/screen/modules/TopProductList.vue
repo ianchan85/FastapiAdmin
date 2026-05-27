@@ -39,51 +39,60 @@ function formatNumber(num: number): string {
   gap: 8px;
   overflow: auto;
 }
+
 .product-row {
   display: flex;
-  align-items: center;
   gap: 8px;
+  align-items: center;
   padding: 10px;
-  background: rgba(12, 18, 48, 0.6);
+  background: rgb(12 18 48 / 60%);
   border-radius: 8px;
 }
+
 .product-rank {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 22px;
+  height: 22px;
   font-size: 10px;
   font-weight: 700;
-  background: rgba(26, 32, 80, 0.6);
+  background: rgb(26 32 80 / 60%);
+  border-radius: 50%;
 }
+
 .product-rank.rank-1 {
+  color: #fff;
   background: #ef4444;
-  color: #fff;
 }
+
 .product-rank.rank-2 {
+  color: #fff;
   background: #f59e0b;
-  color: #fff;
 }
+
 .product-rank.rank-3 {
-  background: #3b82f6;
   color: #fff;
+  background: #3b82f6;
 }
+
 .product-info {
   flex: 1;
   min-width: 0;
 }
+
 .product-name {
   display: block;
   font-size: 13px;
   font-weight: 500;
 }
+
 .product-category {
   display: block;
   font-size: 11px;
   opacity: 0.5;
 }
+
 .product-sales {
   font-size: 14px;
   font-weight: 600;

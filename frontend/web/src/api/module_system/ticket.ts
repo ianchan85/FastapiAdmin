@@ -79,6 +79,15 @@ export interface TicketUpdateForm {
   description?: string;
 }
 
-export interface TicketForm extends TicketCreateForm, TicketUpdateForm {
+export interface TicketForm {
   id?: number;
+  title: string;
+  ticket_content: string;
+  content?: string;
+  ticket_type: string;
+  images?: string;
+  description?: string;
+  status?: string;
+  reply?: string;
+  assigned_id?: number;
 }

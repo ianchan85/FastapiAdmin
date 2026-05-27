@@ -34,37 +34,42 @@ const overview = ref([
   grid-template-columns: repeat(4, 1fr);
   gap: 10px;
 }
+
 .stat-card {
   display: flex;
-  align-items: center;
   gap: 10px;
+  align-items: center;
   padding: 12px;
-  background: rgba(12, 18, 48, 0.6);
+  background: rgb(12 18 48 / 60%);
   border: 1px solid;
   border-radius: 8px;
   transition:
     transform 0.2s,
     box-shadow 0.3s;
 }
+
 .stat-card:hover {
   transform: translateY(-1px);
 }
+
 .stat-icon {
-  width: 38px;
-  height: 38px;
-  border-radius: 8px;
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
+  width: 38px;
+  height: 38px;
   font-size: 18px;
-  flex-shrink: 0;
+  border-radius: 8px;
 }
+
 .stat-val {
+  display: block;
   font-size: 22px;
   font-weight: 700;
-  display: block;
   line-height: 1.2;
 }
+
 .stat-label {
   font-size: 12px;
   opacity: 0.5;

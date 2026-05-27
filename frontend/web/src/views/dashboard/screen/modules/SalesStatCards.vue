@@ -41,34 +41,40 @@ function formatNumber(num: number): string {
   flex-direction: column;
   gap: 10px;
 }
+
 .sales-card {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 12px;
-  background: rgba(12, 18, 48, 0.6);
+  background: rgb(12 18 48 / 60%);
   border-radius: 8px;
 }
+
 .sales-label {
   font-size: 12px;
   opacity: 0.6;
 }
+
 .sales-value {
   font-size: 18px;
   font-weight: 600;
   color: #e0e6ff;
 }
+
 .sales-change {
-  font-size: 12px;
   padding: 2px 6px;
+  font-size: 12px;
   border-radius: 4px;
 }
+
 .sales-change.positive {
-  background: rgba(16, 185, 129, 0.2);
   color: #10b981;
+  background: rgb(16 185 129 / 20%);
 }
+
 .sales-change.negative {
-  background: rgba(239, 68, 68, 0.2);
   color: #ef4444;
+  background: rgb(239 68 68 / 20%);
 }
 </style>

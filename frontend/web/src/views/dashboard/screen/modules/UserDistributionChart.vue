@@ -88,8 +88,8 @@ onUnmounted(() => {
 
 <style scoped>
 .chart-box-sm {
-  width: 100%;
   flex: 1;
+  width: 100%;
   min-height: 0;
 }
 </style>

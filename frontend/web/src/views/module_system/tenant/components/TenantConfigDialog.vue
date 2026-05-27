@@ -37,7 +37,9 @@
                   :enable-preview="true"
                   :enable-crop="true"
                   v-bind="brandCropBind('tenant_logo')"
-                  @success="(fileInfo: UploadFilePath) => handleUploadSuccess(fileInfo, 'tenant_logo')"
+                  @success="
+                    (fileInfo: UploadFilePath) => handleUploadSuccess(fileInfo, 'tenant_logo')
+                  "
                   @error="handleUploadError"
                 />
               </ElFormItem>
@@ -53,7 +55,9 @@
                   :enable-preview="true"
                   :enable-crop="true"
                   v-bind="brandCropBind('tenant_favicon')"
-                  @success="(fileInfo: UploadFilePath) => handleUploadSuccess(fileInfo, 'tenant_favicon')"
+                  @success="
+                    (fileInfo: UploadFilePath) => handleUploadSuccess(fileInfo, 'tenant_favicon')
+                  "
                   @error="handleUploadError"
                 />
               </ElFormItem>
@@ -69,7 +73,9 @@
                   :enable-preview="true"
                   :enable-crop="true"
                   v-bind="brandCropBind('tenant_login_bg')"
-                  @success="(fileInfo: UploadFilePath) => handleUploadSuccess(fileInfo, 'tenant_login_bg')"
+                  @success="
+                    (fileInfo: UploadFilePath) => handleUploadSuccess(fileInfo, 'tenant_login_bg')
+                  "
                   @error="handleUploadError"
                 />
               </ElFormItem>
@@ -78,7 +84,11 @@
           <ElRow :gutter="24">
             <ElCol :span="8">
               <ElFormItem label="主题色">
-                <ElColorPicker v-model="formData.brand.theme_color" show-alpha :predefine="predefineColors" />
+                <ElColorPicker
+                  v-model="formData.brand.theme_color"
+                  show-alpha
+                  :predefine="predefineColors"
+                />
               </ElFormItem>
             </ElCol>
             <ElCol :span="8">

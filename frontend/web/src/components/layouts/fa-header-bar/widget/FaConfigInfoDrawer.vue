@@ -361,7 +361,10 @@ const resetForm = async () => {
   // 重置其他配置项
   const keysToReset = Object.keys(modifiedFields);
   for (const key of keysToReset) {
-    if (key !== "ip_white_list" && configStore.configData[key as keyof typeof configStore.configData]) {
+    if (
+      key !== "ip_white_list" &&
+      configStore.configData[key as keyof typeof configStore.configData]
+    ) {
       (configStore.configData as Record<string, ConfigTable>)[key as string].config_value =
         configStore.configData[key as keyof typeof configStore.configData]?.config_value || "";
     }

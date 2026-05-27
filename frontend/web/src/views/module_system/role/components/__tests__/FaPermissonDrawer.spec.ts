@@ -96,13 +96,16 @@ function findParentMenu(menuId: number, menuTreeData: MenuTable[]): MenuTable | 
 function hasAnySelectedDescendant(
   node: MenuTable,
   checkedBtns: Record<number, number[]>,
-  tableData: MenuTable[],
+  tableData: MenuTable[]
 ): boolean {
   if (checkedBtns[node.id!]?.length > 0) return true;
   const tableNode = findTableNode(node.id!, tableData);
   if (tableNode?.children) {
     for (const child of tableNode.children) {
-      if ((child.type === MENU_TYPE || child.type === DIR_TYPE) && hasAnySelectedDescendant(child, checkedBtns, tableData)) {
+      if (
+        (child.type === MENU_TYPE || child.type === DIR_TYPE) &&
+        hasAnySelectedDescendant(child, checkedBtns, tableData)
+      ) {
         return true;
       }
     }
@@ -166,16 +169,25 @@ function expandMenuIdsWithAncestors(checkedIds: number[], roots: MenuTable[]): n
    ============================================================ */
 const mockRawTree: MenuTable[] = [
   {
-    id: 1, name: "系统管理", type: DIR_TYPE, icon: "Setting",
+    id: 1,
+    name: "系统管理",
+    type: DIR_TYPE,
+    icon: "Setting",
     children: [
-      { id: 2, name: "用户管理", type: MENU_TYPE,
+      {
+        id: 2,
+        name: "用户管理",
+        type: MENU_TYPE,
         children: [
           { id: 21, name: "新增用户", type: BTN_TYPE },
           { id: 22, name: "编辑用户", type: BTN_TYPE },
           { id: 23, name: "删除用户", type: BTN_TYPE },
         ],
       },
-      { id: 3, name: "角色管理", type: MENU_TYPE,
+      {
+        id: 3,
+        name: "角色管理",
+        type: MENU_TYPE,
         children: [
           { id: 31, name: "新增角色", type: BTN_TYPE },
           { id: 32, name: "编辑角色", type: BTN_TYPE },
@@ -185,9 +197,15 @@ const mockRawTree: MenuTable[] = [
     ],
   },
   {
-    id: 5, name: "业务管理", type: DIR_TYPE, icon: "DataAnalysis",
+    id: 5,
+    name: "业务管理",
+    type: DIR_TYPE,
+    icon: "DataAnalysis",
     children: [
-      { id: 6, name: "订单管理", type: MENU_TYPE,
+      {
+        id: 6,
+        name: "订单管理",
+        type: MENU_TYPE,
         children: [
           { id: 61, name: "查看订单", type: BTN_TYPE },
           { id: 62, name: "导出订单", type: LINK_TYPE },

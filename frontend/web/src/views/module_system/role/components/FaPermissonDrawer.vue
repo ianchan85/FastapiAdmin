@@ -93,9 +93,7 @@
               </template>
               {{ isExpanded ? "收缩" : "展开" }}
             </ElButton>
-            <ElCheckbox v-model="parentChildLinked">
-              父子联动
-            </ElCheckbox>
+            <ElCheckbox v-model="parentChildLinked"> 父子联动 </ElCheckbox>
             <ElTooltip placement="bottom">
               <template #content> 勾选父级菜单时自动勾选所有子菜单 </template>
               <ElIcon class="color-[--el-color-primary] inline-block cursor-pointer">
@@ -274,17 +272,20 @@ function hasAnySelectedDescendant(node: MenuTable): boolean {
   if (checkedBtns.value[node.id!]?.length > 0) {
     return true;
   }
-  
+
   // 检查子菜单
   const tableNode = findTableNode(node.id!, tableData.value);
   if (tableNode?.children) {
     for (const child of tableNode.children) {
-      if ((child.type === MENU_TYPE || child.type === DIR_TYPE) && hasAnySelectedDescendant(child)) {
+      if (
+        (child.type === MENU_TYPE || child.type === DIR_TYPE) &&
+        hasAnySelectedDescendant(child)
+      ) {
         return true;
       }
     }
   }
-  
+
   return false;
 }
 
@@ -429,7 +430,11 @@ function collectBtnState(node: MenuTable) {
 /** 在 isHandlingCascade 保护下执行操作，防止复选事件递归 */
 function withCascadeGuard(fn: () => void) {
   isHandlingCascade.value = true;
-  try { fn(); } finally { isHandlingCascade.value = false; }
+  try {
+    fn();
+  } finally {
+    isHandlingCascade.value = false;
+  }
 }
 
 /** 递归遍历树节点并对每个节点执行回调 */

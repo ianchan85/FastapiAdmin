@@ -61,79 +61,90 @@ function handleToggle() {
   align-items: center;
   justify-content: space-between;
   padding: 18px 32px 14px;
-  border-bottom: 1px solid rgba(26, 40, 80, 0.6);
   margin-bottom: 12px;
+  border-bottom: 1px solid rgb(26 40 80 / 60%);
 }
+
 .header-left {
   display: flex;
-  align-items: center;
   gap: 8px;
+  align-items: center;
   width: 140px;
   font-size: 12px;
   opacity: 0.7;
 }
+
 .header-right {
-  width: 200px;
   display: flex;
+  gap: 12px;
   align-items: center;
   justify-content: flex-end;
-  gap: 12px;
+  width: 200px;
 }
+
 .header-time {
-  opacity: 0.7;
   font-variant-numeric: tabular-nums;
+  opacity: 0.7;
 }
+
 .dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
   display: inline-block;
   flex-shrink: 0;
+  width: 8px;
+  height: 8px;
   background: #00d4ff;
+  border-radius: 50%;
 }
+
 .pulse {
   animation: pulse 2s infinite;
 }
 @keyframes pulse {
   0%,
   100% {
-    opacity: 1;
     box-shadow: 0 0 8px #00d4ff;
+    opacity: 1;
   }
+
   50% {
     opacity: 0.3;
   }
 }
+
 .screen-title {
   flex: 1;
-  text-align: center;
   font-size: 20px;
   font-weight: 700;
+  text-align: center;
   letter-spacing: 4px;
-  text-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+  text-shadow: 0 0 30px rgb(0 212 255 / 50%);
 }
+
 .deco-line {
   display: inline-block;
   width: 40px;
   height: 1px;
-  background: linear-gradient(90deg, transparent, #00d4ff, transparent);
-  vertical-align: middle;
   margin: 0 12px;
+  vertical-align: middle;
+  background: linear-gradient(90deg, transparent, #00d4ff, transparent);
 }
+
 .fullscreen-btn {
-  background: rgba(0, 212, 255, 0.1);
-  border: 1px solid rgba(0, 212, 255, 0.3);
-  border-radius: 6px;
-  padding: 4px 8px;
-  cursor: pointer;
-  color: var(--accent, #00d4ff);
   display: flex;
   align-items: center;
+  padding: 4px 8px;
+  color: var(--accent, #00d4ff);
+  cursor: pointer;
+  background: rgb(0 212 255 / 10%);
+  border: 1px solid rgb(0 212 255 / 30%);
+  border-radius: 6px;
   transition: background 0.2s;
 }
+
 .fullscreen-btn:hover {
-  background: rgba(0, 212, 255, 0.2);
+  background: rgb(0 212 255 / 20%);
 }
+
 .fs-icon {
   width: 16px;
   height: 16px;

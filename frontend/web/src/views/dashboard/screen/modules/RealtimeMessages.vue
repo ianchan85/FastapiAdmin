@@ -50,73 +50,85 @@ const messagesDuplicated = [...messages, ...messages];
 
 <style scoped>
 .msg-scroll {
-  flex: 1;
-  overflow: hidden;
   position: relative;
+  flex: 1;
   min-width: 0;
+  overflow: hidden;
 }
+
 .msg-inner {
-  animation: scrollUp 28s linear infinite;
   width: 100%;
+  animation: scrollUp 28s linear infinite;
 }
+
 .msg-row {
-  font-size: 11px;
-  padding: 5px 0;
   display: flex;
-  align-items: center;
   gap: 6px;
+  align-items: center;
+  padding: 5px 0;
+  font-size: 11px;
+  border-bottom: 1px solid rgb(26 40 80 / 30%);
   opacity: 0.75;
-  border-bottom: 1px solid rgba(26, 40, 80, 0.3);
 }
+
 .msg-time {
-  opacity: 0.4;
   flex-shrink: 0;
-  font-variant-numeric: tabular-nums;
   width: 38px;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.4;
 }
+
 .msg-tag {
-  font-size: 9px;
-  padding: 1px 4px;
-  border-radius: 3px;
   flex-shrink: 0;
+  padding: 1px 4px;
+  font-size: 9px;
+  border-radius: 3px;
 }
+
 .msg-tag.order {
-  background: rgba(0, 212, 255, 0.15);
   color: #00d4ff;
+  background: rgb(0 212 255 / 15%);
 }
+
 .msg-tag.system {
-  background: rgba(124, 58, 237, 0.15);
   color: #7c3aed;
+  background: rgb(124 58 237 / 15%);
 }
+
 .msg-tag.audit {
-  background: rgba(16, 185, 129, 0.15);
   color: #10b981;
+  background: rgb(16 185 129 / 15%);
 }
+
 .msg-tag.deploy {
-  background: rgba(245, 158, 11, 0.15);
   color: #f59e0b;
+  background: rgb(245 158 11 / 15%);
 }
+
 .msg-tag.notice {
-  background: rgba(0, 212, 255, 0.15);
   color: #00d4ff;
+  background: rgb(0 212 255 / 15%);
 }
+
 .msg-tag.alarm {
-  background: rgba(239, 68, 68, 0.15);
   color: #ef4444;
+  background: rgb(239 68 68 / 15%);
 }
+
 .msg-count {
+  padding: 2px 6px;
   margin-left: auto;
   font-size: 10px;
-  opacity: 0.6;
-  background: rgba(0, 212, 255, 0.15);
   color: #00d4ff;
-  padding: 2px 6px;
+  background: rgb(0 212 255 / 15%);
   border-radius: 10px;
+  opacity: 0.6;
 }
 @keyframes scrollUp {
   0% {
     transform: translateY(0);
   }
+
   100% {
     transform: translateY(-50%);
   }

@@ -24,13 +24,14 @@ const networkLatency = ref(12);
   position: relative;
   z-index: 10;
   display: flex;
-  justify-content: center;
   gap: 12px;
+  justify-content: center;
   padding: 10px 0;
   font-size: 12px;
+  border-top: 1px solid rgb(26 40 80 / 60%);
   opacity: 0.4;
-  border-top: 1px solid rgba(26, 40, 80, 0.6);
 }
+
 .sep {
   opacity: 0.3;
 }
