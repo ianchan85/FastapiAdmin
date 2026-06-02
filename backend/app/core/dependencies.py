@@ -96,7 +96,9 @@ async def get_current_user(
     online_user_info = payload.sub
     # 从Redis中获取用户信息
     # online_user_info可能已经是字典类型，需要先判断
-    user_info = online_user_info if isinstance(online_user_info, dict) else json.loads(online_user_info)
+    user_info = (
+        online_user_info if isinstance(online_user_info, dict) else json.loads(online_user_info)
+    )
 
     session_id = user_info.get("session_id")
     if not session_id:
@@ -206,7 +208,9 @@ async def _verify_token(
     online_user_info = payload.sub
     # 从Redis中获取用户信息
     # online_user_info可能已经是字典类型，需要先判断
-    user_info = online_user_info if isinstance(online_user_info, dict) else json.loads(online_user_info)
+    user_info = (
+        online_user_info if isinstance(online_user_info, dict) else json.loads(online_user_info)
+    )
 
     session_id = user_info.get("session_id")
     if not session_id:

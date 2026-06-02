@@ -154,7 +154,9 @@ class ParamsService:
         new_obj_dict = ParamsOutSchema.model_validate(obj).model_dump()
 
         # 同步redis
-        redis_key = f"{RedisInitKeyConfig.SYSTEM_CONFIG.key}:{auth.user.tenant_id}:{data.config_key}"
+        redis_key = (
+            f"{RedisInitKeyConfig.SYSTEM_CONFIG.key}:{auth.user.tenant_id}:{data.config_key}"
+        )
         try:
             result = await RedisCURD(redis).set(
                 key=redis_key,
@@ -200,7 +202,9 @@ class ParamsService:
         redis_payload = out.model_dump(mode="json")
 
         # 同步redis
-        redis_key = f"{RedisInitKeyConfig.SYSTEM_CONFIG.key}:{auth.user.tenant_id}:{new_obj.config_key}"
+        redis_key = (
+            f"{RedisInitKeyConfig.SYSTEM_CONFIG.key}:{auth.user.tenant_id}:{new_obj.config_key}"
+        )
         try:
             value = json.dumps(redis_payload, ensure_ascii=False)
             result = await RedisCURD(redis).set(
@@ -344,7 +348,9 @@ class ParamsService:
         返回:
         - list[dict]: 系统配置模型实例字典列表表示
         """
-        redis_keys = await RedisCURD(redis).get_keys(f"{RedisInitKeyConfig.SYSTEM_CONFIG.key}:{tenant_id}:*")
+        redis_keys = await RedisCURD(redis).get_keys(
+            f"{RedisInitKeyConfig.SYSTEM_CONFIG.key}:{tenant_id}:*"
+        )
         redis_configs = await RedisCURD(redis).mget(redis_keys)
         configs = []
         for config in redis_configs:
@@ -356,13 +362,14 @@ class ParamsService:
             except Exception as e:
                 log.error(f"解析系统配置数据失败: {e}")
                 continue
-        
+
         # 如果 Redis 中没有数据，从数据库中加载并缓存
         if not configs:
             log.info("Redis 中没有系统配置数据，从数据库中加载")
             async with async_db_session() as session:
                 async with session.begin():
                     from app.api.v1.module_system.auth.schema import AuthSchema
+
                     auth = AuthSchema(db=session, check_data_scope=False)
                     config_obj = await ParamsCRUD(auth).get_obj_list_crud()
                     if config_obj:

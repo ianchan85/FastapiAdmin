@@ -85,12 +85,14 @@ class LoginService:
                 key=login_form.captcha_key,
                 captcha=login_form.captcha,
             )
-        log.info(f"[登录计时] 验证码校验: {round((time.time() - _t) * 1000, 1)}ms"); _t2 = time.time()
+        log.info(f"[登录计时] 验证码校验: {round((time.time() - _t) * 1000, 1)}ms")
+        _t2 = time.time()
 
         # 用户认证
         auth = AuthSchema(db=db)
         user = await UserCRUD(auth).get_by_username_crud(username=login_form.username)
-        log.info(f"[登录计时] 数据库查询用户: {round((time.time() - _t2) * 1000, 1)}ms"); _t3 = time.time()
+        log.info(f"[登录计时] 数据库查询用户: {round((time.time() - _t2) * 1000, 1)}ms")
+        _t3 = time.time()
 
         if not user:
             raise CustomException(msg="用户不存在")
@@ -99,14 +101,28 @@ class LoginService:
             plain_password=login_form.password, password_hash=user.password
         ):
             raise CustomException(msg="账号或密码错误")
-        log.info(f"[登录计时] Bcrypt密码校验: {round((time.time() - _t3) * 1000, 1)}ms"); _t4 = time.time()
+        log.info(f"[登录计时] Bcrypt密码校验: {round((time.time() - _t3) * 1000, 1)}ms")
+        _t4 = time.time()
 
         if user.status == "1":
             raise CustomException(msg="用户已被停用")
 
+        # 检查用户的默认租户是否正常
+        from sqlalchemy import select
+        from app.api.v1.module_system.tenant.model import TenantModel
+        tenant_stmt = (
+            select(TenantModel)
+            .where(TenantModel.id == user.tenant_id, TenantModel.status == "0", TenantModel.is_deleted.is_(False))
+            .limit(1)
+        )
+        tenant_result = await auth.db.execute(tenant_stmt)
+        if not tenant_result.scalar_one_or_none():
+            raise CustomException(msg="所属租户已被禁用，请联系平台管理员")
+
         # 更新最后登录时间
         user = await UserCRUD(auth).update_last_login_crud(id=user.id)
-        log.info(f"[登录计时] 更新登录时间: {round((time.time() - _t4) * 1000, 1)}ms"); _t5 = time.time()
+        log.info(f"[登录计时] 更新登录时间: {round((time.time() - _t4) * 1000, 1)}ms")
+        _t5 = time.time()
 
         if not user:
             raise CustomException(msg="用户不存在")
@@ -120,7 +136,9 @@ class LoginService:
             user=user,
             login_type=login_form.login_type,
         )
-        log.info(f"[登录计时] 创建Token(含IP解析+Redis写入+在线记录): {round((time.time() - _t5) * 1000, 1)}ms")
+        log.info(
+            f"[登录计时] 创建Token(含IP解析+Redis写入+在线记录): {round((time.time() - _t5) * 1000, 1)}ms"
+        )
 
         log.info(f"[登录计时] ⭐ 登录总耗时: {round((time.time() - _t) * 1000, 1)}ms")
 
@@ -297,7 +315,9 @@ class LoginService:
         refresh_expires = timedelta(seconds=settings.REFRESH_TOKEN_EXPIRE_MINUTES)
         now = datetime.now()
 
-        session_info_json = session_info if isinstance(session_info, str) else json.dumps(session_info)
+        session_info_json = (
+            session_info if isinstance(session_info, str) else json.dumps(session_info)
+        )
 
         access_token = create_access_token(
             payload=JWTPayloadSchema(
@@ -400,10 +420,7 @@ class LoginService:
             )
             result = await db.execute(stmt)
             tenant_objs = result.scalars().all()
-            return [
-                TenantOptionSchema(id=t.id, name=t.name, code=t.code)
-                for t in tenant_objs
-            ]
+            return [TenantOptionSchema(id=t.id, name=t.name, code=t.code) for t in tenant_objs]
 
         # 普通用户通过 sys_user_tenant 关联表查询
         stmt = (
@@ -418,10 +435,7 @@ class LoginService:
         )
         result = await db.execute(stmt)
         tenant_objs = result.scalars().all()
-        return [
-            TenantOptionSchema(id=t.id, name=t.name, code=t.code)
-            for t in tenant_objs
-        ]
+        return [TenantOptionSchema(id=t.id, name=t.name, code=t.code) for t in tenant_objs]
 
     @classmethod
     async def select_tenant_service(
@@ -525,8 +539,7 @@ class LoginService:
         set_current_tenant(tenant_id, auth.user.is_superuser)
 
         log.info(
-            f"用户 {auth.user.username}(id={auth.user.id}) 切换到租户 "
-            f"{tenant.name}(id={tenant_id})"
+            f"用户 {auth.user.username}(id={auth.user.id}) 切换到租户 {tenant.name}(id={tenant_id})"
         )
 
         return SelectTenantOutSchema(

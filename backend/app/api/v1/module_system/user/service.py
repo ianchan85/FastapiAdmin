@@ -143,6 +143,11 @@ class UserService:
             dept = await DeptCRUD(auth).get_by_id_crud(id=data.dept_id)
             if not dept:
                 raise CustomException(msg="部门不存在")
+
+        # 检查租户配额
+        from app.api.v1.module_system.tenant.service import TenantService
+        await TenantService.check_quota_service(auth, auth.tenant_id, "user")
+
         # 创建用户
         if data.password:
             data.password = PwdUtil.set_password_hash(password=data.password)
@@ -316,15 +321,12 @@ class UserService:
             }
 
             # 租户菜单约束：非超管用户只能看到租户菜单权限内的菜单
-            if menu_ids and auth.user.tenant_id:
+            if menu_ids and auth.tenant_id:
                 from app.api.v1.module_system.tenant.service import TenantService
 
-                allowed_ids = await TenantService.get_tenant_menu_ids(
-                    auth, auth.user.tenant_id
-                )
-                if allowed_ids is not None:
-                    allowed_set = set(allowed_ids)
-                    menu_ids = menu_ids & allowed_set
+                allowed_ids = await TenantService.get_tenant_menu_ids(auth, auth.tenant_id)
+                allowed_set = set(allowed_ids)
+                menu_ids = menu_ids & allowed_set
 
             # 使用树形结构查询，预加载children关系
             menus = (
@@ -587,7 +589,9 @@ class UserService:
                 try:
                     count = count + 1
                     # 数据转换
-                    gender = "1" if row["gender"] == "男" else ("2" if row["gender"] == "女" else "1")
+                    gender = (
+                        "1" if row["gender"] == "男" else ("2" if row["gender"] == "女" else "1")
+                    )
                     status = "0" if row["status"] == "正常" else "1"
 
                     # 构建用户数据
@@ -627,7 +631,10 @@ class UserService:
                             await UserCRUD(auth).set_user_roles_crud(
                                 user_ids=[new_user.id], role_ids=user_create_schema.role_ids
                             )
-                        if user_create_schema.position_ids and len(user_create_schema.position_ids) > 0:
+                        if (
+                            user_create_schema.position_ids
+                            and len(user_create_schema.position_ids) > 0
+                        ):
                             await UserCRUD(auth).set_user_positions_crud(
                                 user_ids=[new_user.id], position_ids=user_create_schema.position_ids
                             )

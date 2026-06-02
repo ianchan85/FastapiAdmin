@@ -43,7 +43,7 @@ class Settings(BaseSettings):
     SUMMARY: str = "接口汇总"  # 文档概述
     DOCS_URL: str = "/docs"  # Swagger UI路径
     REDOC_URL: str = "/redoc"  # ReDoc路径
-    LJDOC_URL: str = "/ljdoc"   # LangJin UI路径
+    LJDOC_URL: str = "/ljdoc"  # LangJin UI路径
     ROOT_PATH: str = "/api/v1"  # API路由前缀
 
     # ================================================= #

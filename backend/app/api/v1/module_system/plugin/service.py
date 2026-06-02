@@ -12,15 +12,21 @@ from .schema import PluginCreateSchema, PluginOutSchema, PluginQueryParam, Plugi
 
 
 class PluginService:
-
     def __init__(self):
         raise RuntimeError("Service is stateless, use classmethods")
 
     @classmethod
-    async def page_service(cls, auth: AuthSchema, page_no: int, page_size: int,
-                           search: PluginQueryParam | None = None, order_by: list | None = None) -> dict:
+    async def page_service(
+        cls,
+        auth: AuthSchema,
+        page_no: int,
+        page_size: int,
+        search: PluginQueryParam | None = None,
+        order_by: list | None = None,
+    ) -> dict:
         return await PluginCRUD(auth).page(
-            offset=(page_no - 1) * page_size, limit=page_size,
+            offset=(page_no - 1) * page_size,
+            limit=page_size,
             order_by=order_by or [{"sort": "asc"}],
             search=search.__dict__ if search else {},
             out_schema=PluginOutSchema,
@@ -55,15 +61,18 @@ class PluginService:
     # ───── 插件市场 API ─────
 
     @classmethod
-    async def marketplace_service(cls, auth: AuthSchema, page_no: int, page_size: int,
-                                   category: str | None = None) -> dict:
+    async def marketplace_service(
+        cls, auth: AuthSchema, page_no: int, page_size: int, category: str | None = None
+    ) -> dict:
         search = {}
         if category:
             search["category"] = ("eq", category)
         search["status"] = ("eq", "0")
         result = await PluginCRUD(auth).page(
-            offset=(page_no - 1) * page_size, limit=page_size,
-            order_by=[{"sort": "asc"}], search=search,
+            offset=(page_no - 1) * page_size,
+            limit=page_size,
+            order_by=[{"sort": "asc"}],
+            search=search,
             out_schema=PluginOutSchema,
         )
         tenant_id = getattr(auth, "tenant_id", None) or auth.user.tenant_id
@@ -88,20 +97,28 @@ class PluginService:
         if not plugin or plugin.status == "1":
             raise CustomException(msg="插件不可用")
         exist = await auth.db.execute(
-            sa.select(TenantPluginModel).where(
+            sa
+            .select(TenantPluginModel)
+            .where(
                 TenantPluginModel.tenant_id == tenant_id,
                 TenantPluginModel.plugin_id == plugin_id,
-            ).limit(1)
+            )
+            .limit(1)
         )
         if exist.scalar_one_or_none():
             await auth.db.execute(
-                sa.update(TenantPluginModel).where(
+                sa
+                .update(TenantPluginModel)
+                .where(
                     TenantPluginModel.tenant_id == tenant_id,
                     TenantPluginModel.plugin_id == plugin_id,
-                ).values(enabled="0")
+                )
+                .values(enabled="0")
             )
         else:
-            tp = TenantPluginModel(tenant_id=tenant_id, plugin_id=plugin_id, enabled="0", installed_time=datetime.now())
+            tp = TenantPluginModel(
+                tenant_id=tenant_id, plugin_id=plugin_id, enabled="0", installed_time=datetime.now()
+            )
             auth.db.add(tp)
         await auth.db.flush()
         log.info(f"租户[{tenant_id}]安装插件[{plugin.name}]")
@@ -124,10 +141,13 @@ class PluginService:
     async def toggle_service(cls, auth: AuthSchema, plugin_id: int) -> None:
         tenant_id = getattr(auth, "tenant_id", None) or auth.user.tenant_id
         tp = await auth.db.execute(
-            sa.select(TenantPluginModel).where(
+            sa
+            .select(TenantPluginModel)
+            .where(
                 TenantPluginModel.tenant_id == tenant_id,
                 TenantPluginModel.plugin_id == plugin_id,
-            ).limit(1)
+            )
+            .limit(1)
         )
         tp = tp.scalar_one_or_none()
         if not tp:
@@ -142,15 +162,19 @@ class PluginService:
         if not tenant_id:
             return []
         result = await auth.db.execute(
-            sa.select(PluginModel, TenantPluginModel).join(
-                TenantPluginModel, TenantPluginModel.plugin_id == PluginModel.id
-            ).where(TenantPluginModel.tenant_id == tenant_id).order_by(PluginModel.sort)
+            sa
+            .select(PluginModel, TenantPluginModel)
+            .join(TenantPluginModel, TenantPluginModel.plugin_id == PluginModel.id)
+            .where(TenantPluginModel.tenant_id == tenant_id)
+            .order_by(PluginModel.sort)
         )
         plugins = []
         for p, tp in result.all():
             d = PluginOutSchema.model_validate(p).model_dump()
             d["enabled"] = tp.enabled
             d["installed"] = True
-            d["installed_time"] = tp.installed_time.strftime("%Y-%m-%d %H:%M") if tp.installed_time else ""
+            d["installed_time"] = (
+                tp.installed_time.strftime("%Y-%m-%d %H:%M") if tp.installed_time else ""
+            )
             plugins.append(d)
         return plugins

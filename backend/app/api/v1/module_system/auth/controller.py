@@ -397,9 +397,7 @@ async def oauth_callback_controller(
         url = oauth_service_error_redirect(await resolve_frontend(), "不支持的 OAuth 渠道")
         return RedirectResponse(url=url, status_code=302)
     if not code or not state:
-        url = oauth_service_error_redirect(
-            await resolve_frontend(), "授权被取消或参数不完整"
-        )
+        url = oauth_service_error_redirect(await resolve_frontend(), "授权被取消或参数不完整")
         return RedirectResponse(url=url, status_code=302)
     try:
         token, fe = await complete_oauth_login(

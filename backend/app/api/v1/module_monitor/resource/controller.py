@@ -102,7 +102,7 @@ async def upload_file_controller(
     dependencies=[Depends(AuthPermission(["module_monitor:resource:download"]))],
 )
 async def download_file_controller(
-    path: Annotated[str, Query(description="文件路径")]
+    path: Annotated[str, Query(description="文件路径")],
 ) -> FileResponse:
     """
     下载文件

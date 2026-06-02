@@ -17,10 +17,17 @@ class TicketModel(ModelMixin, TenantMixin, UserMixin):
     __loader_options__: list[str] = ["created_by", "updated_by", "assigned_by"]
 
     title: Mapped[str] = mapped_column(String(200), nullable=False, comment="工单标题")
-    ticket_content: Mapped[str | None] = mapped_column(Text, nullable=True, comment="工单内容（富文本）")
-    content: Mapped[str | None] = mapped_column(Text, nullable=True, comment="工单内容（纯文本摘要）")
+    ticket_content: Mapped[str | None] = mapped_column(
+        Text, nullable=True, comment="工单内容（富文本）"
+    )
+    summary: Mapped[str | None] = mapped_column(
+        Text, nullable=True, comment="工单内容（纯文本摘要）"
+    )
     ticket_type: Mapped[str] = mapped_column(
-        String(20), nullable=False, default="suggestion", comment="工单类型(suggestion:建议 bug:缺陷 optimize:优化 other:其他)"
+        String(20),
+        nullable=False,
+        default="suggestion",
+        comment="工单类型(suggestion:建议 bug:缺陷 optimize:优化 other:其他)",
     )
     status: Mapped[str] = mapped_column(
         String(10), nullable=False, default="0", comment="状态(0:待处理 1:处理中 2:已完成 3:已关闭)"
@@ -49,7 +56,7 @@ class TicketModel(ModelMixin, TenantMixin, UserMixin):
             raise ValueError("工单标题不能为空")
         return title.strip()
 
-    @validates("content", "ticket_content")
+    @validates("summary", "ticket_content")
     def validate_content(self, key: str, content: str | None) -> str | None:
         if content and content.strip():
             return content.strip()

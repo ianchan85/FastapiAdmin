@@ -3,15 +3,15 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator, model_valida
 
 from app.common.enums import QueueEnum
 from app.core.base_schema import BaseSchema
-from app.core.validator import DateTimeStr
+from app.core.validator import DateTimeStr, email_validator, mobile_validator
 
 
 class TenantCreateSchema(BaseModel):
     """新增租户"""
 
-    name: str = Field(..., max_length=100, description="租户名称")
-    code: str = Field(..., max_length=100, description="租户编码")
-    status: str = Field(default="0", description="状态(0:正常 1:禁用)")
+    name: str = Field(..., min_length=1, max_length=100, description="租户名称")
+    code: str = Field(..., min_length=2, max_length=100, description="租户编码")
+    status: str = Field(default="0", max_length=1, description="状态(0:正常 1:禁用)")
     description: str | None = Field(default=None, max_length=255, description="描述")
     start_time: DateTimeStr | None = Field(default=None, description="开始时间")
     end_time: DateTimeStr | None = Field(default=None, description="结束时间")
@@ -21,14 +21,15 @@ class TenantCreateSchema(BaseModel):
     address: str | None = Field(default=None, max_length=255, description="地址")
     domain: str | None = Field(default=None, max_length=255, description="域名")
     logo_url: str | None = Field(default=None, max_length=500, description="Logo URL")
-    sort: int = Field(default=0, description="排序")
+    sort: int = Field(default=0, ge=0, description="排序")
+    package_id: int | None = Field(default=None, gt=0, description="关联套餐ID")
 
     @field_validator("name")
     @classmethod
     def _validate_name(cls, v: str) -> str:
         v = v.strip()
         if not v:
-            raise ValueError("名称不能为空")
+            raise ValueError("租户名称不能为空")
         return v
 
     @field_validator("code")
@@ -36,10 +37,29 @@ class TenantCreateSchema(BaseModel):
     def _validate_code(cls, v: str) -> str:
         v = v.strip()
         if not v:
-            raise ValueError("编码不能为空")
+            raise ValueError("租户编码不能为空")
         if not v.isalnum():
-            raise ValueError("编码只能包含字母和数字")
+            raise ValueError("租户编码仅允许字母和数字")
         return v
+
+    @field_validator("status")
+    @classmethod
+    def _validate_status(cls, v: str) -> str:
+        if v not in {"0", "1"}:
+            raise ValueError("状态仅支持 0(正常) 或 1(禁用)")
+        return v
+
+    @field_validator("contact_phone")
+    @classmethod
+    def _validate_contact_phone(cls, v: str | None) -> str | None:
+        return mobile_validator(v)
+
+    @field_validator("contact_email")
+    @classmethod
+    def _validate_contact_email(cls, v: str | None) -> str | None:
+        if not v:
+            return v
+        return email_validator(v)
 
     @model_validator(mode="after")
     def _validate_time_range(self):
@@ -53,7 +73,7 @@ class TenantUpdateSchema(BaseModel):
 
     name: str | None = Field(default=None, max_length=100, description="租户名称")
     code: str | None = Field(default=None, max_length=100, description="租户编码")
-    status: str | None = Field(default=None, description="状态(0:正常 1:禁用)")
+    status: str | None = Field(default=None, max_length=1, description="状态(0:正常 1:禁用)")
     description: str | None = Field(default=None, max_length=255, description="描述")
     start_time: DateTimeStr | None = Field(default=None, description="开始时间")
     end_time: DateTimeStr | None = Field(default=None, description="结束时间")
@@ -63,7 +83,8 @@ class TenantUpdateSchema(BaseModel):
     address: str | None = Field(default=None, max_length=255, description="地址")
     domain: str | None = Field(default=None, max_length=255, description="域名")
     logo_url: str | None = Field(default=None, max_length=500, description="Logo URL")
-    sort: int | None = Field(default=None, description="排序")
+    sort: int | None = Field(default=None, ge=0, description="排序")
+    package_id: int | None = Field(default=None, gt=0, description="关联套餐ID")
 
     @field_validator("code")
     @classmethod
@@ -72,8 +93,29 @@ class TenantUpdateSchema(BaseModel):
             return v
         v = v.strip()
         if not v.isalnum():
-            raise ValueError("编码只能包含字母和数字")
+            raise ValueError("租户编码仅允许字母和数字")
         return v
+
+    @field_validator("status")
+    @classmethod
+    def _validate_status(cls, v: str | None) -> str | None:
+        if v is None:
+            return v
+        if v not in {"0", "1"}:
+            raise ValueError("状态仅支持 0(正常) 或 1(禁用)")
+        return v
+
+    @field_validator("contact_phone")
+    @classmethod
+    def _validate_contact_phone(cls, v: str | None) -> str | None:
+        return mobile_validator(v)
+
+    @field_validator("contact_email")
+    @classmethod
+    def _validate_contact_email(cls, v: str | None) -> str | None:
+        if not v:
+            return v
+        return email_validator(v)
 
     @model_validator(mode="after")
     def _validate_time_range(self):
@@ -115,9 +157,23 @@ class TenantQueryParam:
 class TenantUserAddSchema(BaseModel):
     """向租户添加用户"""
 
-    user_id: int = Field(..., description="用户ID")
-    role: str = Field(default="member", description="租户内角色(owner/admin/member)")
-    is_default: int = Field(default=0, description="是否默认租户(0:否 1:是)")
+    user_id: int = Field(..., gt=0, description="用户ID")
+    role: str = Field(default="member", max_length=20, description="租户内角色(owner/admin/member)")
+    is_default: int = Field(default=0, ge=0, le=1, description="是否默认租户(0:否 1:是)")
+
+    @field_validator("role")
+    @classmethod
+    def _validate_role(cls, v: str) -> str:
+        if v not in {"owner", "admin", "member"}:
+            raise ValueError("租户角色仅支持 owner(拥有者)、admin(管理员)、member(成员)")
+        return v
+
+    @field_validator("is_default")
+    @classmethod
+    def _validate_is_default(cls, v: int) -> int:
+        if v not in {0, 1}:
+            raise ValueError("是否默认仅支持 0(否) 或 1(是)")
+        return v
 
 
 class TenantUserOutSchema(BaseModel):
@@ -136,6 +192,7 @@ class TenantUserOutSchema(BaseModel):
 
 
 # ============ P1: 配额管理 ============
+
 
 class TenantQuotaOutSchema(BaseModel):
     """租户配额响应"""
@@ -161,12 +218,20 @@ class TenantQuotaUpdateSchema(BaseModel):
 
 # ============ P1: 租户配置 ============
 
+
 class TenantConfigItem(BaseModel):
     """单个配置项"""
 
-    config_key: str = Field(..., description="配置键")
-    config_value: str = Field(..., description="配置值")
-    config_type: str = Field(default="string", description="配置类型")
+    config_key: str = Field(..., min_length=1, max_length=100, description="配置键")
+    config_value: str = Field(..., max_length=65535, description="配置值")
+    config_type: str = Field(default="string", max_length=20, description="配置类型(string/json/int/bool)")
+
+    @field_validator("config_type")
+    @classmethod
+    def _validate_config_type(cls, v: str) -> str:
+        if v not in {"string", "json", "int", "bool"}:
+            raise ValueError("配置类型仅支持 string、json、int、bool")
+        return v
 
 
 class TenantConfigOutSchema(TenantConfigItem):
@@ -179,6 +244,7 @@ class TenantConfigOutSchema(TenantConfigItem):
 
 
 # ============ P1: 租户菜单 ============
+
 
 class TenantMenuSetSchema(BaseModel):
     """批量设置租户菜单权限"""

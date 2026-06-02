@@ -126,7 +126,9 @@ class TenantMiddleware(BaseHTTPMiddleware):
         super().__init__(app)
 
     async def dispatch(
-        self, request: Request, call_next: RequestResponseEndpoint,
+        self,
+        request: Request,
+        call_next: RequestResponseEndpoint,
     ) -> Response:
         """处理请求，注入租户上下文。
 
@@ -156,11 +158,11 @@ class TenantMiddleware(BaseHTTPMiddleware):
 
             if tenant_id is not None:
                 log.debug(
-                "租户上下文已设置: tenant_id={}, is_super_admin={}, path={}",
-                tenant_id,
-                is_super_admin,
-                path,
-            )
+                    "租户上下文已设置: tenant_id={}, is_super_admin={}, path={}",
+                    tenant_id,
+                    is_super_admin,
+                    path,
+                )
 
             # 继续处理请求
             response = await call_next(request)

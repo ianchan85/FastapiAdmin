@@ -172,6 +172,7 @@ def decode_access_token_with_tenant(token: str) -> tuple[JWTPayloadSchema, int |
 
     try:
         import json
+
         if payload.sub:
             user_info = json.loads(payload.sub)
             tenant_id = user_info.get("tenant_id")

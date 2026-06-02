@@ -85,7 +85,7 @@ def run(
 
         # 清除配置缓存，确保重新加载配置
         from app.config.setting import get_settings
-        
+
         get_settings.cache_clear()
         settings = get_settings()
 

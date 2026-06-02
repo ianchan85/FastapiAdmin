@@ -144,9 +144,7 @@ def get_dynamic_router() -> APIRouter:
 
             except Exception as e:
                 hint = _import_failure_hint(e)
-                log.exception(
-                    f"❌ 处理模块失败: {module_path}\n   {hint}\n   异常: {e!s}"
-                )
+                log.exception(f"❌ 处理模块失败: {module_path}\n   {hint}\n   异常: {e!s}")
 
         # 将所有容器路由注册到根路由
         for prefix, container_router in sorted(container_routers.items()):

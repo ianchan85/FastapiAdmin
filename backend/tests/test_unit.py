@@ -2,8 +2,8 @@
 
 import pytest
 
-
 # ==================== 01. 租户 ContextVar ====================
+
 
 class TestTenantContextVar:
     """租户上下文变量读写与清理。"""
@@ -31,6 +31,7 @@ class TestTenantContextVar:
 
 
 # ==================== 02. ORM 模型定义 ====================
+
 
 class TestModels:
     """核心业务模型表名与字段完整性。"""
@@ -116,6 +117,7 @@ class TestModels:
 
 # ==================== 03. Pydantic Schema ====================
 
+
 class TestSchemas:
     """请求/响应Schema字段验证。"""
 
@@ -160,6 +162,7 @@ class TestSchemas:
 
 # ==================== 04. 配置类 ====================
 
+
 class TestSettings:
     """配置默认值与环境变量覆盖。"""
 
@@ -185,6 +188,7 @@ class TestSettings:
 
 
 # ==================== 05. 常量与枚举 ====================
+
 
 class TestEnums:
     """业务枚举值完整性。"""

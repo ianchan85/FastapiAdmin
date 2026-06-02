@@ -256,7 +256,7 @@ class NoticeService:
     @classmethod
     async def get_latest_notices_service(cls, auth: AuthSchema, limit: int = 5) -> list[dict]:
         """获取最新 N 条已启用公告"""
-        from sqlalchemy import select, desc
+        from sqlalchemy import desc, select
 
         from .model import NoticeModel
         from .schema import NoticeOutSchema
@@ -274,7 +274,7 @@ class NoticeService:
     @classmethod
     async def get_panel_data_service(cls, auth: AuthSchema) -> dict:
         """聚合通知面板数据：通知 + 消息 + 待办"""
-        from sqlalchemy import select, desc
+        from sqlalchemy import desc, select
 
         # 1. 通知：最新 5 条已启用公告
         notices = await cls.get_latest_notices_service(auth, limit=5)
@@ -284,11 +284,7 @@ class NoticeService:
         try:
             from app.api.v1.module_system.log.model import OperationLogModel
 
-            stmt = (
-                select(OperationLogModel)
-                .order_by(desc(OperationLogModel.created_time))
-                .limit(5)
-            )
+            stmt = select(OperationLogModel).order_by(desc(OperationLogModel.created_time)).limit(5)
             result = await auth.db.execute(stmt)
             logs = result.scalars().all()
             for log_entry in logs:
@@ -296,7 +292,9 @@ class NoticeService:
                     "id": log_entry.id,
                     "title": log_entry.oper_param or "系统操作",
                     "content": f"{log_entry.oper_user_name or '系统'} 执行了 {log_entry.title or '操作'}",
-                    "time": log_entry.created_time.strftime("%Y-%m-%d %H:%M") if log_entry.created_time else "",
+                    "time": log_entry.created_time.strftime("%Y-%m-%d %H:%M")
+                    if log_entry.created_time
+                    else "",
                     "type": "system",
                 })
         except Exception:

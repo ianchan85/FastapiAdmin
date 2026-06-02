@@ -103,26 +103,29 @@ async def change_current_user_password_controller(
     return SuccessResponse(data=result_dict, msg="修改密码成功, 请重新登录")
 
 
-@UserRouter.put(
-    "/reset/password",
+@UserRouter.post(
+    "/{id}/reset-password",
     summary="重置密码",
     description="重置密码",
     response_model=ResponseSchema[UserOutSchema],
 )
 async def reset_password_controller(
+    id: Annotated[int, Path(description="用户ID")],
     data: ResetPasswordSchema,
-    auth: Annotated[AuthSchema, Depends(get_current_user)],
+    auth: Annotated[AuthSchema, Depends(AuthPermission(["module_system:user:update"]))],
 ) -> JSONResponse:
     """
     重置密码
 
     参数:
+    - id (int): 用户ID
     - data (ResetPasswordSchema): 重置密码模型
     - auth (AuthSchema): 认证信息模型
 
     返回:
     - JSONResponse: 重置密码JSON响应
     """
+    data.id = id
     result_dict = await UserService.reset_user_password_service(data=data, auth=auth)
     log.info(f"重置密码成功: {result_dict}")
     return SuccessResponse(data=result_dict, msg="重置密码成功")

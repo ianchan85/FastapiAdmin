@@ -61,12 +61,7 @@ def _format_file_with_context(record: dict) -> str:
     """
     from app.core.context.request_context import RequestContext
 
-    base = (
-        "{time:YYYY-MM-DD HH:mm:ss.SSS} | "
-        "{level: <8} | "
-        "{name}:{function}:{line} - "
-        "{message}"
-    )
+    base = "{time:YYYY-MM-DD HH:mm:ss.SSS} | {level: <8} | {name}:{function}:{line} - {message}"
 
     cid = RequestContext.get_correlation_id()
     uid = RequestContext.get_user_id()

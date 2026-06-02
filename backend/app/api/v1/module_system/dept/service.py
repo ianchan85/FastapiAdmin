@@ -91,6 +91,11 @@ class DeptService:
         obj = await DeptCRUD(auth).get(code=data.code)
         if obj:
             raise CustomException(msg="创建失败，编码已存在")
+
+        # 检查租户配额
+        from app.api.v1.module_system.tenant.service import TenantService
+        await TenantService.check_quota_service(auth, auth.tenant_id, "dept")
+
         dept = await DeptCRUD(auth).create(data=data)
         return DeptOutSchema.model_validate(dept).model_dump()
 

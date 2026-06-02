@@ -7,6 +7,7 @@ Create Date: 2026-05-23
 大多数表的 (tenant_id, field) 组合唯一索引已由 ORM (TenantMixin + UniqueConstraint)
 通过 create_tables() 自动创建。本迁移仅处理剩下两个尚未迁移的索引。
 """
+
 from collections.abc import Sequence
 
 import sqlalchemy as sa
@@ -27,7 +28,9 @@ UNIQUE_RECREATE = [
 def upgrade() -> None:
     for table_name, field, old_name, new_name in UNIQUE_RECREATE:
         op.execute(sa.text(f"ALTER TABLE {table_name} DROP INDEX {old_name}"))
-        op.execute(sa.text(f"ALTER TABLE {table_name} ADD UNIQUE INDEX {new_name} (tenant_id, {field})"))
+        op.execute(
+            sa.text(f"ALTER TABLE {table_name} ADD UNIQUE INDEX {new_name} (tenant_id, {field})")
+        )
 
 
 def downgrade() -> None:

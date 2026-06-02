@@ -274,6 +274,9 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
                 if hasattr(obj, "tenant_id"):
                     obj_tid = getattr(obj, "tenant_id", None)
                     if obj_tid is not None and obj_tid != self.auth.user.tenant_id:
+                        is_platform = getattr(self.model, "__platform_data_shared__", False)
+                        if is_platform and obj_tid == 1:
+                            raise CustomException(msg="平台数据仅管理员可修改")
                         raise CustomException(msg="无权修改其他租户的数据")
 
             # 设置字段值（只检查一次current_user）
@@ -345,18 +348,23 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
                 raise CustomException(msg="暂不支持复合主键的批量删除")
 
             # 检查模型是否支持软删除
-            if hasattr(self.model, "is_deleted") and hasattr(self.model, "deleted_time") and hasattr(self.model, "deleted_id"):
+            if (
+                hasattr(self.model, "is_deleted")
+                and hasattr(self.model, "deleted_time")
+                and hasattr(self.model, "deleted_id")
+            ):
                 # 执行软删除
-                update_data = {
-                    "is_deleted": True,
-                    "deleted_time": datetime.now()
-                }
+                update_data = {"is_deleted": True, "deleted_time": datetime.now()}
                 # 如果有当前用户，设置删除人ID
                 if self.auth.user:
                     update_data["deleted_id"] = self.auth.user.id
 
                 # 只更新有权限的数据（主键 + 租户隔离）
-                sql = update(self.model).where(pk_cols[0].in_(ids), *self.__tenant_condition()).values(**update_data)
+                sql = (
+                    update(self.model)
+                    .where(pk_cols[0].in_(ids), *self.__tenant_condition())
+                    .values(**update_data)
+                )
                 await self.auth.db.execute(sql)
                 await self.auth.db.flush()
             else:
@@ -379,12 +387,13 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         """
         try:
             # 检查模型是否支持软删除
-            if hasattr(self.model, "is_deleted") and hasattr(self.model, "deleted_time") and hasattr(self.model, "deleted_id"):
+            if (
+                hasattr(self.model, "is_deleted")
+                and hasattr(self.model, "deleted_time")
+                and hasattr(self.model, "deleted_id")
+            ):
                 # 执行软删除
-                update_data = {
-                    "is_deleted": True,
-                    "deleted_time": datetime.now()
-                }
+                update_data = {"is_deleted": True, "deleted_time": datetime.now()}
                 # 如果有当前用户，设置删除人ID
                 if self.auth.user:
                     update_data["deleted_id"] = self.auth.user.id
@@ -424,7 +433,11 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
                 raise CustomException(msg="暂不支持复合主键的批量更新")
 
             # 只更新有权限的数据（主键 + 租户隔离）
-            sql = update(self.model).where(pk_cols[0].in_(ids), *self.__tenant_condition()).values(**kwargs)
+            sql = (
+                update(self.model)
+                .where(pk_cols[0].in_(ids), *self.__tenant_condition())
+                .values(**kwargs)
+            )
             await self.auth.db.execute(sql)
             await self.auth.db.flush()
         except CustomException:
@@ -454,16 +467,20 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
                 raise CustomException(msg="暂不支持复合主键的批量恢复")
 
             # 检查模型是否支持软删除
-            if hasattr(self.model, "is_deleted") and hasattr(self.model, "deleted_time") and hasattr(self.model, "deleted_id"):
+            if (
+                hasattr(self.model, "is_deleted")
+                and hasattr(self.model, "deleted_time")
+                and hasattr(self.model, "deleted_id")
+            ):
                 # 执行恢复操作
-                update_data = {
-                    "is_deleted": False,
-                    "deleted_time": None,
-                    "deleted_id": None
-                }
+                update_data = {"is_deleted": False, "deleted_time": None, "deleted_id": None}
 
                 # 只更新有权限的数据（主键 + 租户隔离）
-                sql = update(self.model).where(pk_cols[0].in_(ids), *self.__tenant_condition()).values(**update_data)
+                sql = (
+                    update(self.model)
+                    .where(pk_cols[0].in_(ids), *self.__tenant_condition())
+                    .values(**update_data)
+                )
                 await self.auth.db.execute(sql)
                 await self.auth.db.flush()
             else:

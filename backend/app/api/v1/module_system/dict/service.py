@@ -197,7 +197,9 @@ class DictTypeService:
                 search={"dict_type": data.dict_type}
             )
             dict_data = [
-                DictDataOutSchema.model_validate(row).model_dump(mode="json") for row in dict_data_list if row
+                DictDataOutSchema.model_validate(row).model_dump(mode="json")
+                for row in dict_data_list
+                if row
             ]
 
             value = json.dumps(dict_data, ensure_ascii=False)
@@ -238,7 +240,9 @@ class DictTypeService:
                 # 如果有字典数据，不能删除
                 raise CustomException(msg="删除失败，该数据字典类型下存在字典数据")
             # 删除Redis缓存
-            redis_key = f"{RedisInitKeyConfig.SYSTEM_DICT.key}:{auth.user.tenant_id}:{exist_obj.dict_type}"
+            redis_key = (
+                f"{RedisInitKeyConfig.SYSTEM_DICT.key}:{auth.user.tenant_id}:{exist_obj.dict_type}"
+            )
             try:
                 await RedisCURD(redis).delete(redis_key)
                 log.info(f"删除字典类型成功: {id}")
@@ -404,7 +408,9 @@ class DictDataService:
                                 for row in dict_data_list
                                 if row
                             ]
-                            redis_key = f"{RedisInitKeyConfig.SYSTEM_DICT.key}:{tenant_id}:{dict_type}"
+                            redis_key = (
+                                f"{RedisInitKeyConfig.SYSTEM_DICT.key}:{tenant_id}:{dict_type}"
+                            )
                             value = json.dumps(dict_data, ensure_ascii=False)
                             await RedisCURD(redis).set(
                                 key=redis_key,
@@ -419,7 +425,9 @@ class DictDataService:
             raise CustomException(msg=f"字典数据初始化失败: {e!s}")
 
     @classmethod
-    async def get_init_dict_service(cls, redis: Redis, dict_type: str, tenant_id: int = 1) -> list[dict]:
+    async def get_init_dict_service(
+        cls, redis: Redis, dict_type: str, tenant_id: int = 1
+    ) -> list[dict]:
         """
         从缓存获取字典数据列表信息
 
@@ -500,7 +508,9 @@ class DictDataService:
                 search={"dict_type": data.dict_type}
             )
             dict_data = [
-                DictDataOutSchema.model_validate(row).model_dump(mode="json") for row in dict_data_list if row
+                DictDataOutSchema.model_validate(row).model_dump(mode="json")
+                for row in dict_data_list
+                if row
             ]
 
             value = json.dumps(dict_data, ensure_ascii=False)
@@ -591,7 +601,9 @@ class DictDataService:
                 search={"dict_type": data.dict_type}
             )
             dict_data = [
-                DictDataOutSchema.model_validate(row).model_dump(mode="json") for row in dict_data_list if row
+                DictDataOutSchema.model_validate(row).model_dump(mode="json")
+                for row in dict_data_list
+                if row
             ]
 
             value = json.dumps(dict_data, ensure_ascii=False)
@@ -646,7 +658,9 @@ class DictDataService:
             # 清除缓存
             for dict_type in dict_types_to_clear:
                 try:
-                    redis_key = f"{RedisInitKeyConfig.SYSTEM_DICT.key}:{auth.user.tenant_id}:{dict_type}"
+                    redis_key = (
+                        f"{RedisInitKeyConfig.SYSTEM_DICT.key}:{auth.user.tenant_id}:{dict_type}"
+                    )
                     await RedisCURD(redis).delete(redis_key)
                     log.info(f"清除字典缓存成功: {dict_type}")
                 except Exception as e:

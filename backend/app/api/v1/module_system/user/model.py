@@ -78,17 +78,11 @@ class UserModel(ModelMixin, TenantMixin, UserMixin):
         "deleted_by",
     ]
 
-    username: Mapped[str] = mapped_column(
-        String(64), nullable=False, comment="用户名/登录账号"
-    )
+    username: Mapped[str] = mapped_column(String(64), nullable=False, comment="用户名/登录账号")
     password: Mapped[str] = mapped_column(String(255), nullable=False, comment="密码哈希")
     name: Mapped[str] = mapped_column(String(32), nullable=False, comment="昵称")
-    mobile: Mapped[str | None] = mapped_column(
-        String(11), nullable=True, comment="手机号"
-    )
-    email: Mapped[str | None] = mapped_column(
-        String(64), nullable=True, comment="邮箱"
-    )
+    mobile: Mapped[str | None] = mapped_column(String(11), nullable=True, comment="手机号")
+    email: Mapped[str | None] = mapped_column(String(64), nullable=True, comment="邮箱")
     gender: Mapped[str | None] = mapped_column(
         String(1), default="2", nullable=True, comment="性别(0:男 1:女 2:未知)"
     )

@@ -1,7 +1,8 @@
+import re
 from typing import Any
 
 from fastapi import Query
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from app.common.enums import QueueEnum
 from app.core.base_schema import UserBySchema
@@ -17,11 +18,40 @@ class WorkflowCreateSchema(BaseModel):
     nodes: list | None = Field(default=None, description="Vue Flow nodes")
     edges: list | None = Field(default=None, description="Vue Flow edges")
 
+    @field_validator("name")
+    @classmethod
+    def validate_name(cls, v: str) -> str:
+        v = v.strip()
+        if len(v) < 1 or len(v) > 128:
+            raise ValueError("流程名称长度必须在1-128个字符之间")
+        return v
+
+    @field_validator("code")
+    @classmethod
+    def validate_code(cls, v: str) -> str:
+        v = v.strip()
+        if len(v) < 2 or len(v) > 64:
+            raise ValueError("流程编码长度必须在2-64个字符之间")
+        if not re.match(r"^[A-Za-z][A-Za-z0-9_]*$", v):
+            raise ValueError("流程编码必须以字母开头，仅允许字母、数字、下划线")
+        return v
+
 
 class WorkflowUpdateSchema(WorkflowCreateSchema):
     """更新工作流"""
 
-    workflow_status: str | None = Field(default=None, description="draft/published/archived")
+    workflow_status: str | None = Field(default=None, max_length=32, description="draft/published/archived")
+
+    @field_validator("workflow_status")
+    @classmethod
+    def validate_workflow_status(cls, v: str | None) -> str | None:
+        if v is None:
+            return v
+        allowed = {"draft", "published", "archived"}
+        v = v.strip()
+        if v not in allowed:
+            raise ValueError(f"流程状态必须为 {allowed}")
+        return v
 
 
 class WorkflowOutSchema(UserBySchema):

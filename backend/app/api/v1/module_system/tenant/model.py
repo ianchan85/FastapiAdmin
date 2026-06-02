@@ -39,8 +39,14 @@ class TenantModel(ModelMixin):
     logo_url: Mapped[str | None] = mapped_column(
         String(500), nullable=True, default=None, comment="Logo URL"
     )
-    sort: Mapped[int] = mapped_column(
-        Integer, nullable=False, default=0, comment="排序"
+    sort: Mapped[int] = mapped_column(Integer, nullable=False, default=0, comment="排序")
+    package_id: Mapped[int | None] = mapped_column(
+        Integer,
+        ForeignKey("sys_tenant_package.id", ondelete="SET NULL", onupdate="CASCADE"),
+        nullable=True,
+        default=None,
+        index=True,
+        comment="关联套餐ID",
     )
     start_time: Mapped[datetime | None] = mapped_column(
         DateTime, nullable=True, default=None, comment="开始时间"
@@ -78,9 +84,7 @@ class TenantUserModel(MappedBase):
         {"comment": "用户租户关联表"},
     )
 
-    id: Mapped[int] = mapped_column(
-        Integer, primary_key=True, autoincrement=True, comment="主键ID"
-    )
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True, comment="主键ID")
     user_id: Mapped[int] = mapped_column(
         Integer,
         ForeignKey("sys_user.id", ondelete="CASCADE", onupdate="CASCADE"),
@@ -130,10 +134,18 @@ class TenantQuotaModel(MappedBase):
         index=True,
         comment="租户ID",
     )
-    max_users: Mapped[int] = mapped_column(Integer, nullable=False, default=50, comment="最大用户数")
-    max_roles: Mapped[int] = mapped_column(Integer, nullable=False, default=20, comment="最大角色数")
-    max_storage_mb: Mapped[int] = mapped_column(Integer, nullable=False, default=500, comment="最大存储(MB)")
-    max_depts: Mapped[int] = mapped_column(Integer, nullable=False, default=50, comment="最大部门数")
+    max_users: Mapped[int] = mapped_column(
+        Integer, nullable=False, default=50, comment="最大用户数"
+    )
+    max_roles: Mapped[int] = mapped_column(
+        Integer, nullable=False, default=20, comment="最大角色数"
+    )
+    max_storage_mb: Mapped[int] = mapped_column(
+        Integer, nullable=False, default=500, comment="最大存储(MB)"
+    )
+    max_depts: Mapped[int] = mapped_column(
+        Integer, nullable=False, default=50, comment="最大部门数"
+    )
 
     tenant: Mapped["TenantModel"] = relationship("TenantModel", lazy="selectin")
 
@@ -178,6 +190,56 @@ class TenantMenuModel(MappedBase):
         nullable=False,
         index=True,
         comment="租户ID",
+    )
+    menu_id: Mapped[int] = mapped_column(
+        Integer,
+        ForeignKey("sys_menu.id", ondelete="CASCADE", onupdate="CASCADE"),
+        nullable=False,
+        index=True,
+        comment="菜单ID",
+    )
+
+
+class TenantPackageModel(MappedBase):
+    """租户套餐表 — 预定义的功能套餐，简化租户授权"""
+
+    __tablename__: str = "sys_tenant_package"
+    __table_args__: dict[str, str] = {"comment": "租户套餐表"}
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True, comment="主键ID")
+    name: Mapped[str] = mapped_column(String(100), nullable=False, unique=True, comment="套餐名称")
+    code: Mapped[str] = mapped_column(String(100), nullable=False, unique=True, comment="套餐编码")
+    status: Mapped[str] = mapped_column(
+        String(10), nullable=False, default="0", comment="状态(0:正常 1:禁用)"
+    )
+    sort: Mapped[int] = mapped_column(Integer, nullable=False, default=0, comment="排序")
+    description: Mapped[str | None] = mapped_column(
+        String(255), nullable=True, default=None, comment="描述"
+    )
+    create_time: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.now, nullable=False, comment="创建时间"
+    )
+    update_time: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.now, onupdate=datetime.now, nullable=False, comment="更新时间"
+    )
+
+
+class TenantPackageMenuModel(MappedBase):
+    """套餐-菜单关联表 — 定义套餐包含的菜单资源"""
+
+    __tablename__: str = "sys_tenant_package_menu"
+    __table_args__ = (
+        UniqueConstraint("package_id", "menu_id", name="uq_package_menu"),
+        {"comment": "套餐菜单关联表"},
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True, comment="主键ID")
+    package_id: Mapped[int] = mapped_column(
+        Integer,
+        ForeignKey("sys_tenant_package.id", ondelete="CASCADE", onupdate="CASCADE"),
+        nullable=False,
+        index=True,
+        comment="套餐ID",
     )
     menu_id: Mapped[int] = mapped_column(
         Integer,

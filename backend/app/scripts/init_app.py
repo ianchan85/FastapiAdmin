@@ -55,6 +55,20 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:
         log.info("✅ Redis租户配置初始化完成")
         await SchedulerUtil.init_scheduler(redis=app.state.redis)
         log.info("✅ 定时任务调度器初始化完成")
+
+        # 注册租户到期检查（每小时执行一次）
+        from app.api.v1.module_system.tenant.service import TenantService
+        from app.core.ap_scheduler import scheduler
+        from apscheduler.triggers.interval import IntervalTrigger
+        scheduler.add_job(
+            TenantService.check_tenant_expiry,
+            trigger=IntervalTrigger(hours=1),
+            id="system_tenant_expiry_check",
+            name="租户到期检查",
+            replace_existing=True,
+        )
+        log.info("✅ 租户到期检查任务已注册")
+
         await FastAPILimiter.init(
             redis=app.state.redis,
             prefix=settings.REQUEST_LIMITER_REDIS_PREFIX,
@@ -87,7 +101,9 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:
         log.info("✅ 定时任务调度器已关闭")
         await FastAPILimiter.close()
         log.info("✅ 请求限制器已关闭")
-        await import_modules_async(modules=settings.EVENT_LIST, desc="全局事件", app=app, status=False)
+        await import_modules_async(
+            modules=settings.EVENT_LIST, desc="全局事件", app=app, status=False
+        )
         log.info("✅ 全局事件模块卸载完成")
         console_close()
 
@@ -237,5 +253,5 @@ def reset_api_docs(app: FastAPI) -> None:
             title=app.title + " - LangJin UI",
             swagger_js_url=settings.CUSTOM_JS_URL,
             swagger_css_url=settings.CUSTOM_CSS_URL,
-            swagger_favicon_url=settings.FAVICON_URL
+            swagger_favicon_url=settings.FAVICON_URL,
         )

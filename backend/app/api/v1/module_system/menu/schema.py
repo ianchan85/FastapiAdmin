@@ -11,31 +11,38 @@ from app.core.validator import DateTimeStr, menu_request_validator
 class MenuCreateSchema(BaseModel):
     """菜单创建模型"""
 
-    name: str = Field(..., max_length=50, description="菜单名称")
+    name: str = Field(..., min_length=1, max_length=50, description="菜单名称")
     type: int = Field(..., ge=1, le=4, description="菜单类型(1:目录 2:菜单 3:按钮 4:外链)")
-    order: int = Field(..., ge=1, description="显示顺序")
+    order: int = Field(..., ge=0, description="显示顺序")
     permission: str | None = Field(default=None, max_length=100, description="权限标识")
-    icon: str | None = Field(default=None, max_length=100, description="菜单图标")
+    icon: str | None = Field(default=None, max_length=50, description="菜单图标")
     route_name: str | None = Field(default=None, max_length=100, description="路由名称")
     route_path: str | None = Field(default=None, max_length=200, description="路由地址")
-    component_path: str | None = Field(default=None, max_length=255, description="组件路径")
+    component_path: str | None = Field(default=None, max_length=200, description="组件路径")
     redirect: str | None = Field(default=None, max_length=200, description="重定向地址")
-    hidden: bool = Field(default=False, description="是否隐藏(True:是 False:否)")
-    keep_alive: bool = Field(default=True, description="是否缓存(True:是 False:否)")
-    always_show: bool = Field(default=False, description="是否始终显示(True:是 False:否)")
+    hidden: bool = Field(default=False, description="是否隐藏")
+    keep_alive: bool = Field(default=True, description="是否缓存")
+    always_show: bool = Field(default=False, description="是否始终显示")
     title: str | None = Field(default=None, max_length=50, description="菜单标题")
     params: list[dict[str, str]] | None = Field(
         default=None,
         description="路由参数，格式为[{key: string, value: string}]",
     )
-    affix: bool = Field(default=False, description="是否固定标签页(True:是 False:否)")
+    affix: bool = Field(default=False, description="是否固定标签页")
     parent_id: int | None = Field(default=None, ge=1, description="父菜单ID")
-    status: str = Field(default="0", description="是否启用(0:启用 1:禁用)")
+    status: str = Field(default="0", max_length=1, description="状态(0:正常 1:禁用)")
     description: str | None = Field(default=None, max_length=255, description="描述")
     client: Literal["pc", "app"] = Field(
         default="pc",
         description="终端(pc:管理端桌面 app:移动端)",
     )
+
+    @field_validator("status")
+    @classmethod
+    def _validate_status(cls, v: str) -> str:
+        if v not in {"0", "1"}:
+            raise ValueError("状态仅支持 0(正常) 或 1(禁用)")
+        return v
 
     @model_validator(mode="before")
     @classmethod

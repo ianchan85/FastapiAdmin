@@ -9,7 +9,13 @@ from app.core.dependencies import AuthPermission
 from app.core.logger import log
 from app.core.router_class import OperationLogRoute
 
-from .schema import TicketBatchSchema, TicketCreateSchema, TicketOutSchema, TicketQueryParam, TicketUpdateSchema
+from .schema import (
+    TicketBatchSchema,
+    TicketCreateSchema,
+    TicketOutSchema,
+    TicketQueryParam,
+    TicketUpdateSchema,
+)
 from .service import TicketService
 
 TicketRouter = APIRouter(route_class=OperationLogRoute, prefix="/ticket", tags=["工单管理"])
@@ -21,11 +27,19 @@ async def ticket_list(
     search: Annotated[TicketQueryParam, Depends()],
     auth: Annotated[AuthSchema, Depends(AuthPermission(["module_system:ticket:query"]))],
 ):
-    result = await TicketService.page_service(auth=auth, page_no=page.page_no, page_size=page.page_size, search=search, order_by=page.order_by)
+    result = await TicketService.page_service(
+        auth=auth,
+        page_no=page.page_no,
+        page_size=page.page_size,
+        search=search,
+        order_by=page.order_by,
+    )
     return SuccessResponse(data=result, msg="查询成功")
 
 
-@TicketRouter.get("/detail/{id}", summary="工单详情", response_model=ResponseSchema[TicketOutSchema])
+@TicketRouter.get(
+    "/detail/{id}", summary="工单详情", response_model=ResponseSchema[TicketOutSchema]
+)
 async def ticket_detail(
     id: Annotated[int, Path()],
     auth: Annotated[AuthSchema, Depends(AuthPermission(["module_system:ticket:query"]))],
@@ -44,7 +58,9 @@ async def ticket_create(
     return SuccessResponse(data=result, msg="创建成功")
 
 
-@TicketRouter.put("/update/{id}", summary="更新工单", response_model=ResponseSchema[TicketOutSchema])
+@TicketRouter.put(
+    "/update/{id}", summary="更新工单", response_model=ResponseSchema[TicketOutSchema]
+)
 async def ticket_update(
     id: Annotated[int, Path()],
     data: TicketUpdateSchema,

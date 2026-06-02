@@ -16,17 +16,24 @@ from app.utils.xss_util import sanitize_html
 class NoticeCreateSchema(BaseModel):
     """公告通知创建模型"""
 
-    notice_title: str = Field(..., max_length=50, description="公告标题")
-    notice_type: str = Field(..., description="公告类型（1通知 2公告）")
-    notice_content: str = Field(..., description="公告内容")
-    status: str = Field(default="0", description="是否启用(0:启用 1:禁用)")
+    notice_title: str = Field(..., min_length=1, max_length=64, description="公告标题")
+    notice_type: str = Field(..., max_length=1, description="公告类型(1:通知 2:公告)")
+    notice_content: str = Field(..., max_length=65535, description="公告内容")
+    status: str = Field(default="0", max_length=1, description="状态(0:正常 1:禁用)")
     description: str | None = Field(default=None, max_length=255, description="描述")
 
     @field_validator("notice_type")
     @classmethod
     def _validate_notice_type(cls, value: str):
         if value not in {"1", "2"}:
-            raise ValueError("公告类型仅支持 '1'(通知) 或 '2'(公告)")
+            raise ValueError("公告类型仅支持 1(通知) 或 2(公告)")
+        return value
+
+    @field_validator("status")
+    @classmethod
+    def _validate_status(cls, value: str):
+        if value not in {"0", "1"}:
+            raise ValueError("状态仅支持 0(正常) 或 1(禁用)")
         return value
 
     @field_validator("notice_content")

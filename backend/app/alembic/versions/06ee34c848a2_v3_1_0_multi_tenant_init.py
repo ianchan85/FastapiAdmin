@@ -11,9 +11,9 @@ Revision ID: 06ee34c848a2
 Revises: 002
 Create Date: 2026-05-23 17:18:11.762659
 """
+
 from collections.abc import Sequence
 from datetime import datetime
-from typing import Union
 from uuid import uuid4
 
 import sqlalchemy as sa
@@ -22,9 +22,9 @@ from alembic import op
 
 # revision identifiers, used by Alembic.
 revision: str = "06ee34c848a2"
-down_revision: Union[str, None] = "002"
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | None = "002"
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 # 需要批量更新 tenant_id 的业务表（已通过 TenantMixin 包含 tenant_id 列的表）
 _TENANT_AWARE_TABLES: list[str] = [
@@ -51,17 +51,13 @@ def _get_default_tenant_id() -> int:
     connection = op.get_bind()
 
     # 1. 优先使用已有的 system 租户
-    result = connection.execute(
-        sa.text("SELECT id FROM sys_tenant WHERE code = 'system' LIMIT 1")
-    )
+    result = connection.execute(sa.text("SELECT id FROM sys_tenant WHERE code = 'system' LIMIT 1"))
     row = result.fetchone()
     if row is not None:
         return int(row[0])
 
     # 2. 尝试 code='default'
-    result = connection.execute(
-        sa.text("SELECT id FROM sys_tenant WHERE code = 'default' LIMIT 1")
-    )
+    result = connection.execute(sa.text("SELECT id FROM sys_tenant WHERE code = 'default' LIMIT 1"))
     row = result.fetchone()
     if row is not None:
         return int(row[0])
@@ -116,7 +112,9 @@ def upgrade() -> None:
     )
     op.add_column(
         "sys_tenant",
-        sa.Column("sort", sa.Integer(), nullable=False, server_default=sa.text("0"), comment="排序"),
+        sa.Column(
+            "sort", sa.Integer(), nullable=False, server_default=sa.text("0"), comment="排序"
+        ),
     )
 
     # ========== 2. sys_user_tenant 新建 ==========
@@ -140,8 +138,12 @@ def upgrade() -> None:
             comment="是否默认租户(0:否 1:是)",
         ),
         sa.Column("create_time", sa.DateTime(), nullable=False, comment="创建时间"),
-        sa.ForeignKeyConstraint(["tenant_id"], ["sys_tenant.id"], onupdate="CASCADE", ondelete="CASCADE"),
-        sa.ForeignKeyConstraint(["user_id"], ["sys_user.id"], onupdate="CASCADE", ondelete="CASCADE"),
+        sa.ForeignKeyConstraint(
+            ["tenant_id"], ["sys_tenant.id"], onupdate="CASCADE", ondelete="CASCADE"
+        ),
+        sa.ForeignKeyConstraint(
+            ["user_id"], ["sys_user.id"], onupdate="CASCADE", ondelete="CASCADE"
+        ),
         sa.PrimaryKeyConstraint("id"),
         sa.UniqueConstraint("user_id", "tenant_id", name="uq_user_tenant"),
         comment="用户租户关联表",
@@ -163,22 +165,17 @@ def upgrade() -> None:
     for table_name in _TENANT_AWARE_TABLES:
         connection.execute(
             sa.text(
-                f"UPDATE {table_name} SET tenant_id = :tid "
-                "WHERE tenant_id IS NULL OR tenant_id = 0"
+                f"UPDATE {table_name} SET tenant_id = :tid WHERE tenant_id IS NULL OR tenant_id = 0"
             ),
             {"tid": default_tenant_id},
         )
 
     # 为所有已有用户创建 sys_user_tenant 关联（默认租户，owner 角色）
-    users = connection.execute(
-        sa.text("SELECT id FROM sys_user WHERE is_deleted = 0")
-    ).fetchall()
+    users = connection.execute(sa.text("SELECT id FROM sys_user WHERE is_deleted = 0")).fetchall()
 
     for (user_id,) in users:
         existing = connection.execute(
-            sa.text(
-                "SELECT id FROM sys_user_tenant WHERE user_id = :uid AND tenant_id = :tid"
-            ),
+            sa.text("SELECT id FROM sys_user_tenant WHERE user_id = :uid AND tenant_id = :tid"),
             {"uid": user_id, "tid": default_tenant_id},
         ).fetchone()
         if existing is None:
@@ -212,18 +209,14 @@ def downgrade() -> None:
 
     # 删除迁移创建的默认租户（仅删除 code='default' 的）
     try:
-        connection.execute(
-            sa.text("DELETE FROM sys_tenant WHERE code = 'default'")
-        )
+        connection.execute(sa.text("DELETE FROM sys_tenant WHERE code = 'default'"))
     except Exception:
         pass
 
     # 将业务数据 tenant_id 清空
     for table_name in reversed(_TENANT_AWARE_TABLES):
         try:
-            connection.execute(
-                sa.text(f"UPDATE {table_name} SET tenant_id = NULL")
-            )
+            connection.execute(sa.text(f"UPDATE {table_name} SET tenant_id = NULL"))
         except Exception:
             pass
 
