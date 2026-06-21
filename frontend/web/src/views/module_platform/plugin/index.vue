@@ -327,9 +327,11 @@ const total = ref(0);
 async function fetchData() {
   loading.value = true;
   try {
-    const res = await PluginAPI.list(
-      { page_no: pageNo.value, page_size: pageSize.value, ...searchForm.value }
-    );
+    const res = await PluginAPI.list({
+      page_no: pageNo.value,
+      page_size: pageSize.value,
+      ...searchForm.value,
+    });
     const result = res.data?.data;
     data.value = (result?.items as PluginTable[]) || [];
     total.value = result?.total || 0;

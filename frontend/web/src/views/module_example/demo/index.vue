@@ -205,7 +205,11 @@ const createInitialFormData = (): DemoForm => ({
   json_val: undefined,
 });
 
-type DemoSearchFormParams = { name?: string; status?: number; tenant_id?: number } & AuditSearchFormParams;
+type DemoSearchFormParams = {
+  name?: string;
+  status?: number;
+  tenant_id?: number;
+} & AuditSearchFormParams;
 
 const searchForm = ref<DemoSearchFormParams>({
   name: undefined,

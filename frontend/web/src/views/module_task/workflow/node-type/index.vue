@@ -639,17 +639,17 @@ async function submitForm() {
 
 .code-editor-header {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: space-between;
   padding: 8px 12px;
   background: var(--el-fill-color-light);
   border-bottom: 1px solid var(--el-border-color-lighter);
-  flex-shrink: 0;
 }
 
 .code-editor-title {
-  font-weight: 600;
   font-size: 14px;
+  font-weight: 600;
 }
 
 .code-editor-tip {
@@ -665,8 +665,8 @@ async function submitForm() {
 
 .param-item {
   display: flex;
-  align-items: center;
   gap: 8px;
+  align-items: center;
 
   .el-input {
     flex: 1;

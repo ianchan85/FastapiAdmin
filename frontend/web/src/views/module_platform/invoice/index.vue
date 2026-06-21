@@ -49,7 +49,11 @@
         <ElCard shadow="hover" class="fa-table-card" :style="{ 'margin-top': '0' }">
           <FaTableHeader :loading="myLoading" @refresh="getMyData">
             <template #left>
-              <FaTableHeaderLeft perm-create="tenant:admin" :create-loading="createLoading" @add="handleAdd" />
+              <FaTableHeaderLeft
+                perm-create="tenant:admin"
+                :create-loading="createLoading"
+                @add="handleAdd"
+              />
             </template>
           </FaTableHeader>
 

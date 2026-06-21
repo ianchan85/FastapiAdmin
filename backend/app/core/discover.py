@@ -25,7 +25,7 @@ import sys
 from pathlib import Path
 
 # 第三方库导入
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 from fastapi import FastAPI as _FastAPI
 
 # 内部库导入
@@ -158,7 +158,6 @@ def reload_dynamic_router() -> APIRouter:
     global _dynamic_router_cache, _registered_plugin_prefixes, _app_ref
 
     app = _app_ref
-    rate_deps = []
 
     # ── 1. 从运行中的 app 移除旧的插件路由 ──
     if app and _registered_plugin_prefixes:

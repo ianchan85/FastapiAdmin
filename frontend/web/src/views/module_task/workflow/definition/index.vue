@@ -195,9 +195,9 @@ const selectedIds = computed(() =>
   selectedRows.value.map((r) => r.id).filter((id): id is number => typeof id === "number")
 );
 const batchDeleting = ref(false);
-  const createLoading = ref(false);
-  
-  function onTableSelectionChange(rows: WorkflowTable[]) {
+const createLoading = ref(false);
+
+function onTableSelectionChange(rows: WorkflowTable[]) {
   selectedRows.value = rows;
 }
 

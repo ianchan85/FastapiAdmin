@@ -64,7 +64,11 @@
             批量删除
           </ElButton>
           <ElDropdown v-if="permPatch" v-hasPerm="permPatch" trigger="click">
-            <ElButton type="default" :disabled="removeIds.length === 0 || moreDisabled" :loading="moreLoading">
+            <ElButton
+              type="default"
+              :disabled="removeIds.length === 0 || moreDisabled"
+              :loading="moreLoading"
+            >
               <template #icon>
                 <ArrowDown />
               </template>
@@ -140,5 +144,7 @@ interface Emits {
 
 defineEmits<Emits>();
 
-const moreDisabled = computed(() => props.removeIds.length === 0 || props.deleteLoading || props.moreLoading);
+const moreDisabled = computed(
+  () => props.removeIds.length === 0 || props.deleteLoading || props.moreLoading
+);
 </script>

@@ -189,9 +189,7 @@
                       class="w-full"
                       :icon="job.status === 1 ? 'VideoPlay' : 'VideoPause'"
                       :disabled="job.status !== 1 && job.status !== 0"
-                      @click="
-                        job.status === 1 ? handleResumeJob(job.id) : handlePauseJob(job.id)
-                      "
+                      @click="job.status === 1 ? handleResumeJob(job.id) : handlePauseJob(job.id)"
                     >
                       {{ job.status === 1 ? "恢复" : "暂停" }}
                     </ElButton>

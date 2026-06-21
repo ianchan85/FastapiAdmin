@@ -85,7 +85,11 @@
                   </template>
 
                   <!-- 动态插槽支持 -->
-                  <template v-for="(slotFn, slotName) in getSlots(item)" :key="slotName" #[slotName]>
+                  <template
+                    v-for="(slotFn, slotName) in getSlots(item)"
+                    :key="slotName"
+                    #[slotName]
+                  >
                     <component :is="slotFn" />
                   </template>
                 </component>

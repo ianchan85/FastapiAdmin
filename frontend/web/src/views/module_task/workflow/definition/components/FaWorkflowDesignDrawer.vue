@@ -455,16 +455,16 @@ const filteredNodes = computed(() => {
   return allNodes.value.filter((node) => node.name.toLowerCase().includes(keyword));
 });
 
-type ElTagType = 'success' | 'warning' | 'info' | 'primary' | 'danger';
+type ElTagType = "success" | "warning" | "info" | "primary" | "danger";
 
 const getCategoryType = (category: string): ElTagType => {
   const typeMap: Record<string, ElTagType> = {
-    trigger: 'warning',
-    action: 'primary',
-    condition: 'success',
-    control: 'info',
+    trigger: "warning",
+    action: "primary",
+    condition: "success",
+    control: "info",
   };
-  return typeMap[category] || 'info';
+  return typeMap[category] || "info";
 };
 
 const getCategoryText = (category: string) => {

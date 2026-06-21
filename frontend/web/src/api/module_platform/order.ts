@@ -168,8 +168,7 @@ export interface PaymentRecordTable {
 
 // ─── Refund 类型 ─────────────────────────────────────────
 
-export interface RefundPageQuery extends PageQuery, UserByQueryParams, TenantByQueryParams {
-}
+export interface RefundPageQuery extends PageQuery, UserByQueryParams, TenantByQueryParams {}
 
 export interface RefundTable {
   id: number;

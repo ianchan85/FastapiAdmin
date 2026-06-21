@@ -105,10 +105,7 @@ export function useLoading(defaultKey?: string): UseLoadingReturn {
   /**
    * 包装异步函数 + 显式 key
    */
-  function withKeyLoading<T extends (...args: any[]) => Promise<any>>(
-    key: string,
-    fn: T,
-  ): T {
+  function withKeyLoading<T extends (...args: any[]) => Promise<any>>(key: string, fn: T): T {
     return (async (...args: Parameters<T>) => {
       setLoading(key, true);
       try {
